@@ -24,7 +24,6 @@ public final class Haptics {
     public static func getFeedback(_ type: HapticType) {
         let generator = UINotificationFeedbackGenerator()
         print("#HAPTIC with type:\(type)")
-        
         switch type {
         case .light:
             let impact = UIImpactFeedbackGenerator(style: .light)
