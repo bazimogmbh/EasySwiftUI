@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  EasySwiftUI.swift
 //  
 //
 //  Created by Yevhenii Korsun on 26.09.2023.
