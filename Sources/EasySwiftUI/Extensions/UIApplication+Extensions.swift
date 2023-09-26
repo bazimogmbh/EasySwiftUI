@@ -31,7 +31,6 @@ public extension UIApplication {
 
 fileprivate extension UIViewController {
     var topMostViewController: UIViewController {
-        
         if let presented = self.presentedViewController {
             return presented.topMostViewController
         }
