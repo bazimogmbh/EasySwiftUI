@@ -16,7 +16,6 @@ import Foundation
 //    static let isFirstRun = TestCase(value: nil)
 //}
 
-
 public struct TestCase: Hashable {
     let id = UUID()
     let value: Bool?
