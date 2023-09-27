@@ -9,21 +9,3 @@ import Foundation
 
 typealias OptionalVoid = (() -> ())?
 typealias OptionalVoidWithError = ((Error) -> ())?
-
-func runOnMainActor(_ body: @MainActor @escaping () -> Void) {
-    Task {
-        await MainActor.run {
-            body()
-        }
-    }
-}
-
-func onMainActorWithAnimation(_ body: @MainActor @escaping () -> Void) {
-    Task {
-        await MainActor.run {
-            withAnimation {
-                body()
-            }
-        }
-    }
-}
