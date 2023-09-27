@@ -16,13 +16,13 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
     
     @Binding var selected: TabBarItem
     @ViewBuilder var content: (TabBarItem) -> Content
-    @ViewBuilder var barContent: (TabBarItem) -> BarContent
+    @ViewBuilder var barContent: () -> BarContent
     
     public init(
         tabBarHeight: CGFloat =  EasySwiftUI.tabBarHeight,
         selected: Binding<TabBarItem>,
         content: @escaping (TabBarItem) -> Content,
-        barContent: @escaping (TabBarItem) -> BarContent
+        barContent: @escaping () -> BarContent
     ) {
         self._selected = selected
         self.content = content

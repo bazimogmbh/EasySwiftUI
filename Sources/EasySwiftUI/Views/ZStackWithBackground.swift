@@ -49,7 +49,7 @@ public struct ZStackWithBackground<Content: View>: View {
 
 public extension ZStackWithBackground {
     init(
-        color: Color = EasySwiftUI.appBackground,
+        color: Color,
         alignment: Alignment = .center,
         @ViewBuilder content: @escaping () -> Content
     ) {
