@@ -12,13 +12,17 @@ import Foundation
 // MARK: - How to use
 
 //extension TestCase {
-//    static let isSubscribed = TestCase(value: nil)
-//    static let isFirstRun = TestCase(value: nil)
+//    static let isSubscribed = TestCase(nil)
+//    static let isFirstRun = TestCase(nil)
 //}
 
 public struct TestCase: Hashable {
     let id = UUID()
     let value: Bool?
+    
+    public init(_ value: Bool?) {
+        self.value = value
+    }
 }
 
 public extension Bool {
