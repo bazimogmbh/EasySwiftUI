@@ -20,7 +20,7 @@ public enum FontType {
     case heavy800
     case black900
 
-    var weight: Font.Weight {
+    public var weight: Font.Weight {
         switch self {
         case .ultraLight100: return .ultraLight
         case .thin200: return .thin

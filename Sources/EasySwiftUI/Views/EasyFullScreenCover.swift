@@ -82,7 +82,7 @@ public struct EasyDismiss {
         action(isWithAnimation)
     }
     
-    init(action: @escaping (Bool) -> Void = { _ in }) {
+    public init(action: @escaping (Bool) -> Void = { _ in }) {
         self.action = action
     }
 }
