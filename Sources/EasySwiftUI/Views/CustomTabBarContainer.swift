@@ -25,7 +25,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         barContent: @escaping (TabBarItem) -> BarContent
     ) {
         self.tabBarHeight = tabBarHeight
-        _selected = selected
+        self._selected = selected
         self.content = content
         self.barContent = barContent
     }
