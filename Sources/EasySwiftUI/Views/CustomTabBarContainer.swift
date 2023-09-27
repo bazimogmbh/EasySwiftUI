@@ -22,7 +22,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         tabBarHeight: CGFloat =  EasySwiftUI.tabBarHeight,
         selected: Binding<TabBarItem>,
         content: @escaping (TabBarItem) -> Content,
-        barContent: @escaping () -> BarContent
+        barContent: @escaping ([TabBarItem]) -> BarContent
     ) {
         self._selected = selected
         self.content = content
@@ -44,7 +44,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                     .tag(tabItem)
                     .padding(.bottom, tabBarHeight)
 
-                    barContent(tabItem)
+                    barContent(allTabs)
                         .alignment(.bottom)
                         .ignoresSafeArea(.keyboard)
                 }
