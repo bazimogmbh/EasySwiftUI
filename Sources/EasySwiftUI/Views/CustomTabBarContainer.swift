@@ -20,12 +20,12 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
     
     public init(
         tabBarHeight: CGFloat =  EasySwiftUI.tabBarHeight,
-        selected: TabBarItem,
+        selected: Binding<TabBarItem>,
         content: @escaping (TabBarItem) -> Content,
         barContent: @escaping (TabBarItem) -> BarContent
     ) {
         self.tabBarHeight = tabBarHeight
-        self.selected = selected
+        _selected = selected
         self.content = content
         self.barContent = barContent
     }
@@ -33,7 +33,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
     private var allTabs: [TabBarItem] {
         TabBarItem.allCases as! [TabBarItem]
     }
-    
+
     public var body: some View {
         TabView(selection: $selected) {
             ForEach(allTabs, id:\.self) { tabItem in
