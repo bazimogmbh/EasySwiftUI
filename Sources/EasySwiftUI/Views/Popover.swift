@@ -30,8 +30,13 @@ public struct Popover<Content: View>: View, KeyboardHelper {
     }
     
     public var body: some View {
-        ZStack(alignment: .bottom) {
-            background
+        ZStackWithBackground(color: .clear, alignment: .bottom) {
+            if showBackground {
+                background
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .onTapGesture(perform: close)
+            }
             
             if showContent {
                 content()
@@ -40,6 +45,12 @@ public struct Popover<Content: View>: View, KeyboardHelper {
                     .environment(\.easyDismiss, EasyDismiss { _ in
                         close()
                     })
+                    .onDisappear {
+                        if !showContent {
+                            withAnimation { showBackground = false }
+                            easyDismiss()
+                        }
+                    }
             }
         }
         .onAppear {
@@ -50,29 +61,10 @@ public struct Popover<Content: View>: View, KeyboardHelper {
         }
     }
 
-    @ViewBuilder
-    private var background: some View {
-        if showBackground {
-            background
-                .ignoresSafeArea()
-                .transition(.opacity)
-                .onTapGesture {
-                    close()
-                  }
-        } else {
-            Color.clear
-        }
-    }
-    
     private func close() {
         withAnimation {
             showContent = false
             closeAction()
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            withAnimation { showBackground = false }
-            easyDismiss()
         }
     }
 }
