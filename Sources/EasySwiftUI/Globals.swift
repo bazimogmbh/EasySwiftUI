@@ -8,9 +8,6 @@
 
 import SwiftUI
 
-typealias OptionalVoid = (() -> ())?
-typealias OptionalVoidWithError = ((Error) -> ())?
-
 #if !os(macOS)
 
 func runOnMainActor(_ body: @MainActor @escaping () -> Void) {
