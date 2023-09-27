@@ -10,8 +10,6 @@ import SwiftUI
 #if !os(macOS)
 
 public enum EasySwiftUI {
-    static var printPrefix: String = "!@"
-    
     public static var appBackground: Color = .red
     public static var appForeground: Color = .red
     static var navBarColor: Color = .red
@@ -21,7 +19,6 @@ public enum EasySwiftUI {
     static var tabBarHeight: CGFloat = 76
     
     public static func configureDefault(
-        printPrefix: String,
         appBackground: Color,
         appForeground: Color,
         navBarColor: Color,
@@ -29,7 +26,6 @@ public enum EasySwiftUI {
         navigationBarEdges: SwiftUI.EdgeInsets,
         tabBarHeight: CGFloat
     ) {
-        self.printPrefix = printPrefix
         self.appBackground = appBackground
         self.appForeground = appForeground
         self.navBarColor = navBarColor
