@@ -17,8 +17,8 @@ public struct CoordinatedItem<T> {
 }
 
 public protocol NavigationalItem: Identifiable {
-    public var defaultTransition: AnyTransition? { get }
-    public var groupId: String? { get }
+    var defaultTransition: AnyTransition? { get }
+    var groupId: String? { get }
 }
 
 @MainActor
