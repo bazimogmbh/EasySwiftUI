@@ -10,12 +10,12 @@
 import SwiftUI
 import Combine
 
-protocol KeyboardHelper {
+public protocol KeyboardHelper {
     var isShowKeyboardPublisher: AnyPublisher<Bool, Never> { get }
     func closeKeyboard()
 }
 
-extension KeyboardHelper {
+public extension KeyboardHelper {
     var isShowKeyboardPublisher: AnyPublisher<Bool, Never> {
         Publishers.Merge(
             NotificationCenter.default
