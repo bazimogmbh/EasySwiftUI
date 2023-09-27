@@ -13,7 +13,7 @@ import Combine
 public struct CoordinatedItem<T> {
     public let state: T
     public var transition: AnyTransition? = .opacity
-    public var completion: (() -> ())? = nil
+    public var completion: OptionalVoid = nil
 }
 
 public protocol NavigationalItem: Identifiable {
@@ -26,19 +26,19 @@ public protocol Coordinated: ObservableObject {
     associatedtype FullState: NavigationalItem
     
     @MainActor var navigationStack: [CoordinatedItem<FullState>?] { get set }
-    @MainActor func showFull(_ state: FullState, isWithAnimation: Bool, completion: (() -> ())?)
-    @MainActor func showFull(_ state: FullState, transition: AnyTransition?, isWithAnimation: Bool, completion: (() -> ())?)
+    @MainActor func showFull(_ state: FullState, isWithAnimation: Bool, completion: OptionalVoid)
+    @MainActor func showFull(_ state: FullState, transition: AnyTransition?, isWithAnimation: Bool, completion: OptionalVoid)
     
     @MainActor func closeTopScreen()
     @MainActor func close(by id: FullState.ID)
 }
 
 public extension Coordinated {
-    @MainActor func showFull(_ state: FullState, isWithAnimation: Bool = true, completion: (() -> ())? = nil) {
+    @MainActor func showFull(_ state: FullState, isWithAnimation: Bool = true, completion: OptionalVoid = nil) {
         showFull(state, transition: state.defaultTransition, isWithAnimation: isWithAnimation, completion: completion)
     }
     
-    @MainActor func showFull(_ state: FullState, transition: AnyTransition?, isWithAnimation: Bool = true, completion: (() -> ())? = nil) {
+    @MainActor func showFull(_ state: FullState, transition: AnyTransition?, isWithAnimation: Bool = true, completion: OptionalVoid = nil) {
         onMainActorWithAnimation { [weak self] in
             guard let self else { return }
             
@@ -102,7 +102,7 @@ fileprivate struct DismissableView<Content: View, T>: View {
     @State private var isShow = false
     let transition: AnyTransition?
     let itemToReturn: T
-    let completion: (() -> ())?
+    let completion: OptionalVoid
     @ViewBuilder var content: (T) -> Content
     let closeAction: () -> ()
     
