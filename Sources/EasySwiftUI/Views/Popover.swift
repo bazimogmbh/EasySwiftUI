@@ -14,16 +14,20 @@ public struct Popover<Content: View>: View, KeyboardHelper {
     
     @State private var showContent = false
     @State private var showBackground = false
+    @State private var offset: CGFloat = 0.0
     
-    var background: Color = Color.black.opacity(0.4)
+    var dragHeight: CGFloat
+    var background: Color
     var closeAction: () -> ()
     @ViewBuilder let content: () -> Content
     
     public init(
+        dragHeight: CGFloat = 30,
         background: Color = Color.black.opacity(0.4),
         closeAction: @escaping () -> Void = {},
         @ViewBuilder content: @escaping () -> Content
     ) {
+        self.dragHeight = dragHeight
         self.background = background
         self.closeAction = closeAction
         self.content = content
@@ -51,6 +55,8 @@ public struct Popover<Content: View>: View, KeyboardHelper {
                             easyDismiss()
                         }
                     }
+                    .offset(y: offset)
+                    .overlay(alignment: .top, content: dragArea)
             }
         }
         .onAppear {
@@ -60,6 +66,25 @@ public struct Popover<Content: View>: View, KeyboardHelper {
             }
         }
     }
+    
+    private func dragArea() -> some View {
+        Color.transparent
+            .frame(height: dragHeight)
+            .gesture(DragGesture()
+                .onChanged { value in
+                    if value.translation.height > 0 {
+                        self.offset = value.translation.height
+                    }
+                }
+                .onEnded { value in
+                    if value.translation.height > 100 {
+                        close()
+                    } else {
+                        self.offset = 0
+                    }
+                }
+            )
+    }
 
     private func close() {
         withAnimation {
@@ -68,5 +93,6 @@ public struct Popover<Content: View>: View, KeyboardHelper {
         }
     }
 }
+
 
 #endif
