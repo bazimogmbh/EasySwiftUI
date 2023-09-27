@@ -20,12 +20,12 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
     @ViewBuilder var content: (TabBarItem) -> Content
     @ViewBuilder var barContent: (TabBarItem) -> BarContent
     
-    public init(
+    public init<Content: View, BarContent: View, TabBarItem: TabItemProtocol>(
         tabBarHeight: CGFloat =  EasySwiftUI.tabBarHeight,
-        selected: TabItemProtocol,
-        content: @escaping (TabItemProtocol) -> View,
-        barContent: @escaping (TabItemProtocol
-        ) -> View) {
+        selected: TabBarItem,
+        content: @escaping (TabBarItem) -> Content,
+        barContent: @escaping (TabBarItem) -> BarContent
+    ) {
         self.tabBarHeight = tabBarHeight
         self.selected = selected
         self.content = content
