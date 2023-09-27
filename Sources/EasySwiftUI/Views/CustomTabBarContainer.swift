@@ -9,9 +9,7 @@
 
 import SwiftUI
 
-public protocol TabItemProtocol: Hashable, CaseIterable {
-
-}
+public protocol TabItemProtocol: Hashable, CaseIterable { }
 
 public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem: TabItemProtocol>: View, KeyboardHelper {
     @State private var tabBarHeight: CGFloat = EasySwiftUI.tabBarHeight
