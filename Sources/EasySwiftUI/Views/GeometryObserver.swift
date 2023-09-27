@@ -12,7 +12,7 @@ import SwiftUI
 public struct GeometryObserver<Content: View>: View {
     @ViewBuilder let content: (GeometryProxy?) -> Content
     
-    public init(@ViewBuilder content: @escaping (GeometryProxy?) -> View) {
+    public init(@ViewBuilder content: @escaping (GeometryProxy?) -> Content) {
         self.content = content
     }
     
