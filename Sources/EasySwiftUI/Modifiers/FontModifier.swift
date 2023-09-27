@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-enum FontType {
+public enum FontType {
     case ultraLight100
     case thin200
     case light300
@@ -35,7 +35,7 @@ enum FontType {
     }
 }
 
-struct FontModifier: ViewModifier {
+fileprivate struct FontModifier: ViewModifier {
     let font: Font
     let color: Color?
     let scaleFactor: CGFloat
@@ -54,7 +54,7 @@ struct FontModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     func customFont(_ font: Font, color: Color? = EasySwiftUI.appForeground, scaleFactor: CGFloat = 0.7) -> some View {
         self
             .modifier(FontModifier(font: font, color: color, scaleFactor: scaleFactor))
