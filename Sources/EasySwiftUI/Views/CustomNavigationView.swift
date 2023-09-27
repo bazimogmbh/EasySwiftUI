@@ -9,14 +9,14 @@
 
 import SwiftUI
 
-struct CustomNavigationView<BarContent: View, Content: View>: View {
+public struct CustomNavigationView<BarContent: View, Content: View>: View {
     let background: BackgroundState
     let alignment: Alignment
     var barHeight: CGFloat
     let barContent: BarContent
     let content: Content
     
-    init(
+    public init(
         background: BackgroundState = .color(EasySwiftUI.navBarColor),
         alignment: Alignment = .center,
         barHeight: CGFloat = EasySwiftUI.navigationBarHeight,
@@ -48,7 +48,7 @@ struct CustomNavigationView<BarContent: View, Content: View>: View {
     }
 }
 
-extension CustomNavigationView where BarContent == EmptyView {
+public extension CustomNavigationView where BarContent == EmptyView {
     init(
         background: BackgroundState = .color(EasySwiftUI.navBarColor),
         alignment: Alignment = .center,

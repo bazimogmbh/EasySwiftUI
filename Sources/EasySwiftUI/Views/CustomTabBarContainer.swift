@@ -9,16 +9,28 @@
 
 import SwiftUI
 
-protocol TabItemProtocol: Hashable, CaseIterable {
+public protocol TabItemProtocol: Hashable, CaseIterable {
 
 }
 
-struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem: TabItemProtocol>: View, KeyboardHelper {
+public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem: TabItemProtocol>: View, KeyboardHelper {
     @State private var tabBarHeight: CGFloat = EasySwiftUI.tabBarHeight
     
     @Binding var selected: TabBarItem
     @ViewBuilder var content: (TabBarItem) -> Content
     @ViewBuilder var barContent: (TabBarItem) -> BarContent
+    
+    public init(
+        tabBarHeight: CGFloat =  EasySwiftUI.tabBarHeight,
+        selected: TabItemProtocol,
+        content: @escaping (TabItemProtocol) -> View,
+        barContent: @escaping (TabItemProtocol
+        ) -> View) {
+        self.tabBarHeight = tabBarHeight
+        self.selected = selected
+        self.content = content
+        self.barContent = barContent
+    }
     
     private var allTabs: [TabBarItem] {
         TabBarItem.allCases as! [TabBarItem]
