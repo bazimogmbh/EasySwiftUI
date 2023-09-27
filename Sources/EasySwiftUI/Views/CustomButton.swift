@@ -15,7 +15,7 @@ public struct CustomButton<Content>: View where Content: View {
     
     public init(
         action: @escaping () -> Void,
-        @ViewBuilder label: @escaping () -> View
+        @ViewBuilder label: @escaping () -> Content
     ) {
         self.action = action
         self.label = label
