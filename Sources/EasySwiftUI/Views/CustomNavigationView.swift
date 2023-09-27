@@ -59,7 +59,7 @@ public extension CustomNavigationView where BarContent == EmptyView {
     }
 }
 
-extension View {
+public extension View {
     @ViewBuilder
     func addNavItem<Item: View>(
         alignment: Alignment,
