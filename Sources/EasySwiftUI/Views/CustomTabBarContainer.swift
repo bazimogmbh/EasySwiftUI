@@ -16,7 +16,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
     
     @Binding var selected: TabBarItem
     @ViewBuilder var content: (TabBarItem) -> Content
-    @ViewBuilder var barContent: () -> BarContent
+    @ViewBuilder var barContent: ([TabBarItem]) -> BarContent
     
     public init(
         tabBarHeight: CGFloat =  EasySwiftUI.tabBarHeight,
