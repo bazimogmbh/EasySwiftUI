@@ -135,6 +135,12 @@ public extension View {
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
+    
+    func asButton(action: @escaping @MainActor () -> Void) -> some View {
+        CustomButton(action: action) {
+            self
+        }
+    }
 }
 
 fileprivate struct ScrollButtonStyle: ButtonStyle {
