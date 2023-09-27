@@ -36,7 +36,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         TabBarItem.allCases as! [TabBarItem]
     }
     
-    var body: some View {
+    public var body: some View {
         TabView(selection: $selected) {
             ForEach(allTabs, id:\.self) { tabItem in
                 ZStackWithBackground(alignment: .bottom) {
