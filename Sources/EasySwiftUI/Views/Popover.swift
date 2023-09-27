@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Popover.swift
 //  
 //
 //  Created by Yevhenii Korsun on 27.09.2023.
@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-public struct PopoverView<Content: View>: View, KeyboardHelper {
+public struct Popover<Content: View>: View, KeyboardHelper {
     @Environment(\.easyDismiss) private var easyDismiss
     
     @State private var showContent = false
@@ -29,12 +29,12 @@ public struct PopoverView<Content: View>: View, KeyboardHelper {
         self.content = content
     }
     
-    var body: some View {
+    public var body: some View {
         ZStack(alignment: .bottom) {
             background
             
             if showContent {
-                content
+                content()
                     .transition(.move(edge: .bottom))
                     .zIndex(2)
                     .environment(\.easyDismiss, EasyDismiss { _ in
