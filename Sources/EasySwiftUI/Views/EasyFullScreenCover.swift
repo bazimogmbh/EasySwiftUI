@@ -11,14 +11,14 @@ import SwiftUI
 import Combine
 
 public struct CoordinatedItem<T> {
-    let state: T
-    var transition: AnyTransition? = .opacity
-    var completion: OptionalVoid = nil
+    public let state: T
+    public var transition: AnyTransition? = .opacity
+    public var completion: OptionalVoid = nil
 }
 
 public protocol NavigationalItem: Identifiable {
-    var defaultTransition: AnyTransition? { get }
-    var groupId: String? { get }
+    public var defaultTransition: AnyTransition? { get }
+    public var groupId: String? { get }
 }
 
 @MainActor
