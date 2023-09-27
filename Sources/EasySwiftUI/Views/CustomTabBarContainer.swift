@@ -24,10 +24,10 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         content: @escaping (TabBarItem) -> Content,
         barContent: @escaping (TabBarItem) -> BarContent
     ) {
-        self.tabBarHeight = tabBarHeight
         self._selected = selected
         self.content = content
         self.barContent = barContent
+        self.tabBarHeight = tabBarHeight
     }
     
     private var allTabs: [TabBarItem] {
