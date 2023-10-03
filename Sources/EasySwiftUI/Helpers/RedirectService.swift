@@ -17,7 +17,7 @@ public enum RedirectService {
     public static func redirect(to url: String, scheme: ColorScheme) {
         if let url = URL(string: url) {
             let safari = SFSafariViewController(url: url)
-            safariViewController.overrideUserInterfaceStyle = scheme.style
+            safari.overrideUserInterfaceStyle = scheme.style
             
             DispatchQueue.main.async {
                 UIApplication.topViewController?.present(safari, animated: true)
