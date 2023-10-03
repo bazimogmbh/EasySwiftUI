@@ -14,9 +14,10 @@ import SafariServices
 public enum RedirectService {
     static private let supportService = SupportEmailService()
     
-    public static func redirect(to url: String) {
+    public static func redirect(to url: String, scheme: ColorScheme) {
         if let url = URL(string: url) {
             let safari = SFSafariViewController(url: url)
+            safariViewController.overrideUserInterfaceStyle = scheme.style
             
             DispatchQueue.main.async {
                 UIApplication.topViewController?.present(safari, animated: true)
@@ -30,9 +31,9 @@ public enum RedirectService {
         }
     }
 
-    public static func share(_ fileUrl: String, proxy: GeometryProxy?) {
+    public static func share(_ fileUrl: String, proxy: GeometryProxy?, scheme: ColorScheme) {
         if let url = URL(string: fileUrl) {
-            share([url], proxy: proxy)
+            share([url], proxy: proxy, scheme: scheme)
         }
     }
     
@@ -40,15 +41,28 @@ public enum RedirectService {
         supportService.send(toAddress: toAddress)
     }
     
-    public static func share(_ items: [Any], proxy: GeometryProxy?) {
+    public static func share(_ items: [Any], proxy: GeometryProxy?, scheme: ColorScheme) {
         let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
         
         if let vc = UIApplication.topViewController {
             activityViewController.popoverPresentationController?.sourceView = vc.view
+            activityViewController.overrideUserInterfaceStyle = scheme.style
+            
             if let proxy {
                 activityViewController.popoverPresentationController?.sourceRect = proxy.frame(in: .global)
             }
+            
             vc.present(activityViewController, animated: true, completion: nil)
+        }
+    }
+}
+
+fileprivate extension ColorScheme {
+    var style: UIUserInterfaceStyle {
+        switch self {
+        case .dark: return .dark
+        case .light: return .light
+        default: return .unspecified
         }
     }
 }
