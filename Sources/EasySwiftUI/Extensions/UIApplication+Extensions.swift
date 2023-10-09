@@ -39,7 +39,6 @@ public extension UIApplication {
     }
 }
 
-@available(macOS 12, *)
 fileprivate extension UIViewController {
     var topMostViewController: UIViewController {
         if let presented = self.presentedViewController {

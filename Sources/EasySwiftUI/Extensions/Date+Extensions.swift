@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(macOS 12, *)
 public extension Date {
     func toString(format: String = "yyyy-MM-dd", isLocalized: Bool = false) -> String {
         let formatter = DateFormatter()

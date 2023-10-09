@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(macOS 12, *)
 public extension ObservableObject {
     func binding<Value>(for keyPath: ReferenceWritableKeyPath<Self, Value>) -> Binding<Value> {
         Binding(

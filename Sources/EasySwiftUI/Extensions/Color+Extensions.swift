@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(macOS 12, *)
 public extension Color {
     static let transparent = Color.white.opacity(0.001)
     
@@ -16,7 +15,6 @@ public extension Color {
     }
 }
 
-@available(macOS 12, *)
 public extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
@@ -44,7 +42,6 @@ public extension Color {
     }
 }
 
-@available(macOS 12, *)
 public extension Color {
     static var random: Color {
         Color(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))

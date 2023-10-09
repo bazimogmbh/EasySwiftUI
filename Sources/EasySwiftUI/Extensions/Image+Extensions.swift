@@ -12,7 +12,6 @@ import Cocoa
 
 typealias UIImage = NSImage
 
-@available(macOS 12, *)
 extension NSImage {
     var cgImage: CGImage? {
         var proposedRect = CGRect(origin: .zero, size: size)
@@ -29,7 +28,6 @@ extension NSImage {
 
 #endif
 
-@available(macOS 12, *)
 public extension Image {
     init(universal name: String) {
         if let _ = UIImage(systemName: name) {

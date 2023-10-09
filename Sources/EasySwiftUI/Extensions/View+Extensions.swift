@@ -27,7 +27,6 @@ public struct RectCorner: OptionSet {
     public static let allCorners: RectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
 }
 
-@available(macOS 12, *)
 public extension View {
     func cornerRadius(_ radius: CGFloat, corners: RectCorner) -> some View {
         return self
@@ -52,8 +51,6 @@ public extension View {
     }
 }
 
-
-@available(macOS 12, *)
 public extension View {
     @ViewBuilder
     func alignment(_ alignment: FrameAlignment) -> some View {
@@ -74,7 +71,6 @@ public extension View {
     }
 }
 
-@available(macOS 12, *)
 public extension View {
     @MainActor
     func onTap(action: @escaping @MainActor () -> Void) -> some View {
@@ -167,7 +163,6 @@ public extension View {
     }
 }
 
-@available(macOS 12, *)
 fileprivate struct ScrollButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label

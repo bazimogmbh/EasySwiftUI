@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(macOS 12, *)
 public extension Collection {
     /// Returns the element at the specified index if it is within bounds, otherwise nil.
     subscript (safe index: Int) -> Element? {
