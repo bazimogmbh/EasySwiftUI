@@ -45,6 +45,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                     .padding(.bottom, tabBarHeight)
 
                     barContent(allTabs)
+                        .frame(height: tabBarHeight)
                         .alignment(.bottom)
                         .ignoresSafeArea(.keyboard)
                 }
