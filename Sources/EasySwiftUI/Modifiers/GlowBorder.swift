@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 26.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
 fileprivate struct GlowBorder: ViewModifier {
@@ -31,5 +29,3 @@ public extension View {
         self.modifier(GlowBorder(color: color, lineWidth: lineWidth))
     }
 }
-
-#endif

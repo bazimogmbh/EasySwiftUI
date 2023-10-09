@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 26.09.2023.
 //
 
-#if !os(macOS)
-
 import Foundation
 
 // MARK: - How to use
@@ -50,5 +48,3 @@ public func testValue(_ config: TestCase, defaultValue: Bool = false) -> Bool {
         return defaultValue
     }
 }
-
-#endif

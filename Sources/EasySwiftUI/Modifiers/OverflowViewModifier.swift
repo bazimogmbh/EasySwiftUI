@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 26.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
 fileprivate struct OverflowViewModifier: ViewModifier {
@@ -14,6 +12,9 @@ fileprivate struct OverflowViewModifier: ViewModifier {
     var showIndicator: Bool
     
     func body(content: Content) -> some View {
+#if os(macOS)
+        content
+#else
         GeometryReader { geometry in
             content
                 .background(
@@ -31,6 +32,7 @@ fileprivate struct OverflowViewModifier: ViewModifier {
                 )
                 .wrappedInScrollView(when: contentOverflow, showIndicator: showIndicator)
         }
+#endif
     }
 }
 
@@ -52,5 +54,3 @@ public extension View {
         modifier(OverflowViewModifier(showIndicator: showIndicator))
     }
 }
-
-#endif

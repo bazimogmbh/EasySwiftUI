@@ -5,9 +5,25 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
+
+#if os(macOS)
+
+struct BlurView: NSViewRepresentable {
+    var style: NSVisualEffectView.Material
+
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.material = style
+        return view
+    }
+
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
+        nsView.material = style
+    }
+}
+
+#else
 
 public struct BlurView: UIViewRepresentable {
     public var style: UIBlurEffect.Style

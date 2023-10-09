@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
 public struct CustomNavigationView<BarContent: View, Content: View>: View {
@@ -86,5 +84,3 @@ public extension View {
             }
     }
 }
-
-#endif

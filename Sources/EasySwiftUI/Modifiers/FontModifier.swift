@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
 public enum FontType {
@@ -78,5 +76,3 @@ public extension View {
 //            .customFont(.custom(font.rawValue, size: size), color: color, scaleFactor: scaleFactor)
 //    }
 //}
-
-#endif

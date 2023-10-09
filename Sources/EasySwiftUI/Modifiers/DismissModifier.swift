@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
 public protocol Dismissable: ObservableObject {
@@ -61,5 +59,3 @@ public extension View {
         modifier(DismissModifier(vm: vm, type: type))
     }
 }
-
-#endif

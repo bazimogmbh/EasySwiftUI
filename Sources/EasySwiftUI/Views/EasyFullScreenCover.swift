@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 import Combine
 
@@ -202,12 +200,9 @@ public extension View {
 }
 
 fileprivate func hideKeyboard() {
-    UIApplication.shared.sendAction(
-        #selector(UIResponder.resignFirstResponder),
-        to: nil,
-        from: nil,
-        for: nil
-    )
+#if !os(macOS)
+    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+#endif
 }
 
 fileprivate extension DispatchQueue {
@@ -232,5 +227,3 @@ fileprivate extension DispatchQueue {
 //        return self[answerIndex]
 //    }
 //}
-
-#endif

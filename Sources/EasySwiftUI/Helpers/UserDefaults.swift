@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 26.09.2023.
 //
 
-#if !os(macOS)
-
 import Foundation
 import Combine
 
@@ -120,5 +118,3 @@ public struct UserDefaultsKey: RawRepresentable {
 extension UserDefaults: DefaultsStoragable {
     public typealias UserDefaultsKeyType = UserDefaultsKey
 }
-
-#endif

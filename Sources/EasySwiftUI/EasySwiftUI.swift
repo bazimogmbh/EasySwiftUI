@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-#if !os(macOS)
-
 public enum EasySwiftUI {
     public static var appBackground: Color = .red
     public static var appForeground: Color = .red
@@ -34,5 +32,3 @@ public enum EasySwiftUI {
         self.tabBarHeight = tabBarHeight
     }
 }
-
-#endif

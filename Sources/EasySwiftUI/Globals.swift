@@ -8,8 +8,6 @@
 
 import SwiftUI
 
-#if !os(macOS)
-
 public typealias OptionalVoid = (() -> ())?
 public typealias OptionalVoidWithError = ((Error) -> ())?
 
@@ -52,5 +50,3 @@ public struct Build {
         }
     }
 }
-
-#endif

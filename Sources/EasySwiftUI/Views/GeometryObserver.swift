@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(macOS 12, *)
 public struct GeometryObserver<Content: View>: View {
     @State private var contentProxy: GeometryProxy? = nil
     

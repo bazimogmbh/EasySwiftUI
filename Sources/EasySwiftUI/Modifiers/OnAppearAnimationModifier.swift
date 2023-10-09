@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
 fileprivate struct OnAppearAnimationModifier: ViewModifier {
@@ -33,5 +31,3 @@ public extension View {
         modifier(OnAppearAnimationModifier())
     }
 }
-
-#endif

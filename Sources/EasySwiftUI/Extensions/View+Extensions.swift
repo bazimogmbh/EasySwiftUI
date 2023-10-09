@@ -149,9 +149,7 @@ public extension View {
     }
     
     func hideKeyboard() {
-#if os(macOS)
-        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSResponder.resignFirstResponder), with: nil)
-#else
+#if !os(macOS)
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 #endif
     }

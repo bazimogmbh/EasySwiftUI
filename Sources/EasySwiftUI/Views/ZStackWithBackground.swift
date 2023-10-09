@@ -5,12 +5,15 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
 public enum BackgroundState {
-    case material(Material)
+#if os(macOS)
+    case material(NSVisualEffectView.Material)
+#else
+    case material(UIBlurEffect.Style)
+#endif
+    
     case color(Color)
 }
 
@@ -34,9 +37,8 @@ public struct ZStackWithBackground<Content: View>: View {
         ZStack(alignment: alignment) {
             switch state {
             case .material(let material):
-                Color.clear
+                BlurView(style: material)
                      .ignoresSafeArea()
-                     .background(material)
             case .color(let color):
                 color
                     .ignoresSafeArea()
@@ -58,5 +60,3 @@ public extension ZStackWithBackground {
         self.content = content
     }
 }
-
-#endif

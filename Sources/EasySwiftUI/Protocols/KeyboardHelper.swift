@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 import Combine
 
@@ -17,6 +15,10 @@ public protocol KeyboardHelper {
 
 public extension KeyboardHelper {
     var isShowKeyboardPublisher: AnyPublisher<Bool, Never> {
+#if os(macOS)
+        Just(false)
+            .eraseToAnyPublisher()
+#else
         Publishers.Merge(
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillShowNotification)
@@ -27,16 +29,12 @@ public extension KeyboardHelper {
                 .map { _ in false }
         )
         .eraseToAnyPublisher()
+#endif
     }
     
     func closeKeyboard() {
-        UIApplication.shared.sendAction(
-            #selector(UIResponder.resignFirstResponder),
-            to: nil,
-            from: nil,
-            for: nil
-        )
+#if !os(macOS)
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+#endif
     }
 }
-
-#endif

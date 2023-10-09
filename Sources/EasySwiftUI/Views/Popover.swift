@@ -5,8 +5,6 @@
 //  Created by Yevhenii Korsun on 27.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
 public struct Popover<Content: View>: View, KeyboardHelper {
@@ -93,6 +91,3 @@ public struct Popover<Content: View>: View, KeyboardHelper {
         }
     }
 }
-
-
-#endif
