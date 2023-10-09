@@ -5,11 +5,12 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
+@available(macOS 12, *)
 public struct GeometryObserver<Content: View>: View {
+    @State private var contentProxy: GeometryProxy? = nil
+    
     @ViewBuilder let content: (GeometryProxy?) -> Content
     
     public init(@ViewBuilder content: @escaping (GeometryProxy?) -> Content) {
@@ -17,14 +18,14 @@ public struct GeometryObserver<Content: View>: View {
     }
     
     public var body: some View {
-        content(nil)
-            .opacity(0)
-            .overlay {
+        content(contentProxy)
+            .background {
                 GeometryReader { proxy in
-                    content(proxy)
+                    Color.clear
+                        .onAppear {
+                            contentProxy = proxy
+                        }
                 }
             }
     }
 }
-
-#endif

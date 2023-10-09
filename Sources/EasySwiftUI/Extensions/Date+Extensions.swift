@@ -5,10 +5,9 @@
 //  Created by Yevhenii Korsun on 26.09.2023.
 //
 
-#if !os(macOS)
-
 import Foundation
 
+@available(macOS 12, *)
 public extension Date {
     func toString(format: String = "yyyy-MM-dd", isLocalized: Bool = false) -> String {
         let formatter = DateFormatter()
@@ -24,5 +23,3 @@ public extension Date {
         return formatter.string(from: self)
     }
 }
-
-#endif

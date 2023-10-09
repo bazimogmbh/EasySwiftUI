@@ -5,16 +5,16 @@
 //  Created by Yevhenii Korsun on 27.09.2023.
 //
 
-#if !os(macOS)
 
 import SwiftUI
 
+@available(macOS 12, *)
 public struct CustomButton<Content>: View where Content: View {
     var action: @MainActor () -> () = {}
     var label: () -> Content
     
     public init(
-        action: @escaping () -> Void,
+        action: @escaping @MainActor () -> Void,
         @ViewBuilder label: @escaping () -> Content
     ) {
         self.action = action
@@ -33,11 +33,10 @@ public struct CustomButton<Content>: View where Content: View {
     }
 }
 
-struct CustomLabelButtonStyle: ButtonStyle {
+@available(macOS 12, *)
+fileprivate struct CustomLabelButtonStyle: ButtonStyle {
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.9 : 1)
     }
 }
-
-#endif

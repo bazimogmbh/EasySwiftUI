@@ -5,9 +5,19 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
+
+#if os(macOS)
+
+typealias UIApplication = NSApplication
+
+public extension UIApplication {
+    static var topViewController: NSViewController? {
+        return NSApplication.shared.keyWindow?.contentViewController
+    }
+}
+
+#else
 
 public extension UIApplication {
     static var currentKeyWindow: UIWindow? {
@@ -29,6 +39,7 @@ public extension UIApplication {
     }
 }
 
+@available(macOS 12, *)
 fileprivate extension UIViewController {
     var topMostViewController: UIViewController {
         if let presented = self.presentedViewController {

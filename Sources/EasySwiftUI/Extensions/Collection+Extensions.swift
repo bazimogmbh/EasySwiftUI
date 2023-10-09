@@ -5,10 +5,9 @@
 //  Created by Yevhenii Korsun on 26.09.2023.
 //
 
-#if !os(macOS)
-
 import Foundation
 
+@available(macOS 12, *)
 public extension Collection {
     /// Returns the element at the specified index if it is within bounds, otherwise nil.
     subscript (safe index: Int) -> Element? {
@@ -17,5 +16,3 @@ public extension Collection {
         return self[answerIndex]
     }
 }
-
-#endif

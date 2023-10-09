@@ -5,10 +5,9 @@
 //  Created by Yevhenii Korsun on 25.09.2023.
 //
 
-#if !os(macOS)
-
 import SwiftUI
 
+@available(macOS 12, *)
 public extension ObservableObject {
     func binding<Value>(for keyPath: ReferenceWritableKeyPath<Self, Value>) -> Binding<Value> {
         Binding(
@@ -17,5 +16,3 @@ public extension ObservableObject {
         )
     }
 }
-
-#endif
