@@ -26,16 +26,13 @@ fileprivate struct SwipeToDeleteModifier<UnderContent: View>: ViewModifier {
             content
                 .overlayIf(isOpen) {
                     Color.transparent
-                        .gesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { gesture in
-                                    isOpen = false
-                                    offset = 0
-                                }
-                        )
+                        .onTapGesture {
+                            isOpen = false
+                            offset = 0
+                        }
                 }
                 .offset(x: offset)
-                .gesture(swipe)
+                .highPriorityGesture(swipe)
                 .animation(.easeOut, value: offset)
         }
     }
