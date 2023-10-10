@@ -37,7 +37,7 @@ public extension Coordinated {
     }
     
     @MainActor func showFull(_ state: FullState, transition: AnyTransition?, isWithAnimation: Bool = true, completion: OptionalVoid = nil) {
-        onMainActorWithAnimation { [weak self] in
+        runOnMainActor { [weak self] in
             guard let self else { return }
             
             if let last = self.navigationStack.last, last?.state.id == state.id { return }
@@ -60,17 +60,13 @@ public extension Coordinated {
     }
     
     @MainActor func closeTopScreen() {
-        withAnimation {
-            if let lastIndex = self.navigationStack.lastIndex(where: { $0 != nil }) {
-                self.navigationStack[lastIndex] = nil
-            }
+        if let lastIndex = self.navigationStack.lastIndex(where: { $0 != nil }) {
+            self.navigationStack[lastIndex] = nil
         }
     }
     
     @MainActor func close(by id: FullState.ID) {
-        withAnimation {
-            self.navigationStack = self.navigationStack.filter({ $0?.state.id != id })
-        }
+        self.navigationStack = self.navigationStack.filter({ $0?.state.id != id })
     }
 }
 
