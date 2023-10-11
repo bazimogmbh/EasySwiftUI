@@ -21,7 +21,15 @@ public final class Haptics {
         case warning
     }
     
+    private static var isEnable = true
+    
+    public static func activate(_ isEnable: Bool = true) {
+        self.isEnable = isEnable
+    }
+    
     public static func getFeedback(_ type: HapticType) {
+        guard isEnable else { return }
+        
         let generator = UINotificationFeedbackGenerator()
         print("#HAPTIC with type:\(type)")
         switch type {
