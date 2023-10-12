@@ -16,6 +16,7 @@ fileprivate struct SwipeToDeleteModifier<UnderContent: View>: ViewModifier {
     @State private var offset: CGFloat = 0
 
     var underContentWidth: CGFloat = 130
+    @Binding var isPresented: Bool
     @ViewBuilder var underContent: () -> UnderContent
     
     func body(content: Content) -> some View {
@@ -27,31 +28,41 @@ fileprivate struct SwipeToDeleteModifier<UnderContent: View>: ViewModifier {
                 .overlayIf(isOpen) {
                     Color.transparent
                         .onTapGesture {
-                            isOpen = false
-                            offset = 0
+                            setIsOpen(to: false)
+                            isPresented = false
                         }
                 }
                 .offset(x: offset)
                 .highPriorityGesture(swipe)
                 .animation(.easeOut, value: offset)
         }
+        .onChange(of: isPresented) { _ in
+            if isPresented {
+                setIsOpen(to: true)
+            }
+        }
     }
     
     private var swipe: some Gesture {
         DragGesture()
             .onEnded({ (value) in
-                isOpen = -value.translation.width >= 60
-                offset = isOpen ? -underContentWidth : 0
+                setIsOpen(to: -value.translation.width >= 60)
             })
+    }
+    
+    private func setIsOpen(to value: Bool) {
+        isOpen = value
+        offset = value ? -underContentWidth : 0
     }
 }
 
 public extension View {
     func onSwipe<Content: View>(
         width: CGFloat = 130,
+        isPresented: Binding<Bool> = .constant(false),
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
-        modifier(SwipeToDeleteModifier(underContentWidth: width, underContent: content))
+        modifier(SwipeToDeleteModifier(underContentWidth: width, isPresented: isPresented, underContent: content))
     }
 }
 
