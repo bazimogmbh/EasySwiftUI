@@ -21,4 +21,8 @@ public func ifIpad<T>(_ ipadSize: T, else size: T) -> T {
     return UIDevice.isIpad ? ipadSize : size
 }
 
+public func ifSmallDevice<T>(_ smallSize: T, else size: T) -> T {
+    return UIDevice.isSmallDevice ? smallSize : size
+}
+
 #endif
