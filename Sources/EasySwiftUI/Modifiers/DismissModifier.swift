@@ -13,7 +13,7 @@ public protocol Dismissable: ObservableObject {
 }
 
 public extension Dismissable {
-    @MainActor func dismiss(animated: Bool = true) {
+    @MainActor func dismiss() {
         self.closeView = true
     }
 }
