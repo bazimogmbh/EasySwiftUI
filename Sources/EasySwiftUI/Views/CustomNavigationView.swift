@@ -60,27 +60,32 @@ public extension CustomNavigationView where BarContent == EmptyView {
 public extension View {
     @ViewBuilder
     func addNavItem<Item: View>(
+        if isShowing: Bool = true,
         alignment: Alignment,
         width: CGFloat? = nil,
         offset: CGPoint = CGPoint(x: 0, y: 0),
         item: @escaping () -> Item
     ) -> some View {
-        self
-            .overlay(alignment: .top) {
-                GeometryReader { proxy in
-                    ZStack(alignment: alignment) {
-                        Color.clear
-                        
-                        item()
-                            .offset(x: offset.x, y: offset.y)
-                            .padding(EasySwiftUI.navigationBarEdges)
-                            .if(width) { width, view in
-                                view
-                                    .frame(maxWidth: width * proxy.size.width, alignment: Alignment(horizontal: alignment.horizontal, vertical: .center))
-                            }
+        if isShowing {
+            self
+                .overlay(alignment: .top) {
+                    GeometryReader { proxy in
+                        ZStack(alignment: alignment) {
+                            Color.clear
+                            
+                            item()
+                                .offset(x: offset.x, y: offset.y)
+                                .padding(EasySwiftUI.navigationBarEdges)
+                                .if(width) { width, view in
+                                    view
+                                        .frame(maxWidth: width * proxy.size.width, alignment: Alignment(horizontal: alignment.horizontal, vertical: .center))
+                                }
+                        }
                     }
+                    .frame(height: EasySwiftUI.navigationBarHeight)
                 }
-                .frame(height: EasySwiftUI.navigationBarHeight)
-            }
+        } else {
+            self
+        }
     }
 }
