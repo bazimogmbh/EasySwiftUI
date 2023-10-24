@@ -9,22 +9,12 @@ import SwiftUI
 
 public protocol Dismissable: ObservableObject {
     @MainActor var closeView: Bool { get set }
-    @MainActor func dismiss(animated: Bool)
+    @MainActor func dismiss()
 }
 
 public extension Dismissable {
     @MainActor func dismiss(animated: Bool = true) {
-        if animated {
-            withAnimation {
-                close()
-            }
-        } else {
-            close()
-        }
-        
-        func close() {
-            self.closeView = true
-        }
+        self.closeView = true
     }
 }
 
