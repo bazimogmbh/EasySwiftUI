@@ -40,9 +40,9 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
             ForEach(allTabs, id:\.self) { tabItem in
                 ZStackWithBackground {
                     content(tabItem)
+                        .tag(tabItem)
+                        .padding(.bottom, tabBarHeight)
                 }
-                .tag(tabItem)
-                .padding(.bottom, tabBarHeight)
             }
         }
         .overlay(alignment: .bottom) {
@@ -57,9 +57,6 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         }
         .onAppear {
             UITabBar.appearance().isHidden = true
-        }
-        .onDisappear {
-            UITabBar.appearance().isHidden = false
         }
     }
 }
