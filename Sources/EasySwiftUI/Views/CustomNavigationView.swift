@@ -66,26 +66,22 @@ public extension View {
         offset: CGPoint = CGPoint(x: 0, y: 0),
         item: @escaping () -> Item
     ) -> some View {
-        if isShowing {
-            self
-                .overlay(alignment: .top) {
-                    GeometryReader { proxy in
-                        ZStack(alignment: alignment) {
-                            Color.clear
-                            
-                            item()
-                                .offset(x: offset.x, y: offset.y)
-                                .padding(EasySwiftUI.navigationBarEdges)
-                                .if(width) { width, view in
-                                    view
-                                        .frame(maxWidth: width * proxy.size.width, alignment: Alignment(horizontal: alignment.horizontal, vertical: .center))
-                                }
-                        }
+        self
+            .overlayIf(isShowing, alignment: .top) {
+                GeometryReader { proxy in
+                    ZStack(alignment: alignment) {
+                        Color.clear
+                        
+                        item()
+                            .offset(x: offset.x, y: offset.y)
+                            .padding(EasySwiftUI.navigationBarEdges)
+                            .if(width) { width, view in
+                                view
+                                    .frame(maxWidth: width * proxy.size.width, alignment: Alignment(horizontal: alignment.horizontal, vertical: .center))
+                            }
                     }
-                    .frame(height: EasySwiftUI.navigationBarHeight)
                 }
-        } else {
-            self
-        }
+                .frame(height: EasySwiftUI.navigationBarHeight)
+            }
     }
 }
