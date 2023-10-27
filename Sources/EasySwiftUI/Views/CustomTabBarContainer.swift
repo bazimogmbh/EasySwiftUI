@@ -13,6 +13,7 @@ public protocol TabItemProtocol: Hashable, CaseIterable { }
 
 public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem: TabItemProtocol>: View, KeyboardHelper {
     @State private var tabBarHeight: CGFloat = EasySwiftUI.tabBarHeight
+    @State private var tabBarOpacity: CGFloat = 1
     
     @Binding var selected: TabBarItem
     @ViewBuilder var content: (TabBarItem) -> Content
@@ -37,25 +38,28 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
     public var body: some View {
         TabView(selection: $selected) {
             ForEach(allTabs, id:\.self) { tabItem in
-                ZStackWithBackground(alignment: .bottom) {
-                    ZStackWithBackground(.color(.clear)) {
-                        content(tabItem)
-                    }
-                    .tag(tabItem)
-                    .padding(.bottom, tabBarHeight)
-
-                    barContent(allTabs)
-                        .frame(height: tabBarHeight)
-                        .alignment(.bottom)
-                        .ignoresSafeArea(.keyboard)
+                ZStackWithBackground {
+                    content(tabItem)
                 }
+                .tag(tabItem)
+                .padding(.bottom, tabBarHeight)
             }
+        }
+        .overlay(alignment: .bottom) {
+            barContent(allTabs)
+                .frame(height: tabBarHeight)
+                .opacity(tabBarOpacity)
+                .ignoresSafeArea(.keyboard)
         }
         .onReceive(isShowKeyboardPublisher) { isShow in
             tabBarHeight = isShow ? 0 : EasySwiftUI.tabBarHeight
+            tabBarOpacity = isShow ? 0 : 1
         }
         .onAppear {
             UITabBar.appearance().isHidden = true
+        }
+        .onDisappear {
+            UITabBar.appearance().isHidden = false
         }
     }
 }
