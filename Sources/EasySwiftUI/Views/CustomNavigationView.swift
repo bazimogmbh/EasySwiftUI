@@ -67,7 +67,7 @@ public extension View {
         item: @escaping () -> Item
     ) -> some View {
         self
-            .overlayIf(isShowing, alignment: .top) {
+            .overlay(alignment: .top) {
                 GeometryReader { proxy in
                     ZStack(alignment: alignment) {
                         Color.clear
@@ -82,6 +82,7 @@ public extension View {
                     }
                 }
                 .frame(height: EasySwiftUI.navigationBarHeight)
+                .opacity(isShowing ? 1 : 0)
             }
     }
 }
