@@ -12,15 +12,14 @@ import SwiftUI
 public protocol TabItemProtocol: Hashable, CaseIterable { }
 
 public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem: TabItemProtocol>: View, KeyboardHelper {
-    @State private var tabBarHeight: CGFloat = EasySwiftUI.tabBarHeight
-    @State private var tabBarOpacity: CGFloat = 1
-    
     @Binding var selected: TabBarItem
     @ViewBuilder var content: (TabBarItem) -> Content
     @ViewBuilder var barContent: ([TabBarItem]) -> BarContent
     
+    private let tabBarHeight: CGFloat
+    
     public init(
-        tabBarHeight: CGFloat =  EasySwiftUI.tabBarHeight,
+        tabBarHeight: CGFloat = EasySwiftUI.tabBarHeight,
         selected: Binding<TabBarItem>,
         content: @escaping (TabBarItem) -> Content,
         barContent: @escaping ([TabBarItem]) -> BarContent
@@ -45,15 +44,14 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                 }
             }
         }
-        .overlay(alignment: .bottom) {
-            barContent(allTabs)
-                .frame(height: tabBarHeight)
-                .opacity(tabBarOpacity)
-                .ignoresSafeArea(.keyboard)
-        }
-        .onReceive(isShowKeyboardPublisher) { isShow in
-            tabBarHeight = isShow ? 0 : EasySwiftUI.tabBarHeight
-            tabBarOpacity = isShow ? 0 : 1
+        .overlay {
+            ZStack(alignment: .bottom) {
+                Color.clear
+                
+                barContent(allTabs)
+                    .frame(height: tabBarHeight)
+            }
+            .ignoresSafeArea(.keyboard)
         }
         .onAppear {
             UITabBar.appearance().isHidden = true
