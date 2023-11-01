@@ -17,9 +17,11 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
     @ViewBuilder var barContent: ([TabBarItem]) -> BarContent
     
     private let tabBarHeight: CGFloat
+    private let bottomPadding: CGFloat
     
     public init(
         tabBarHeight: CGFloat = EasySwiftUI.tabBarHeight,
+        bottomPadding: CGFloat = EasySwiftUI.tabBarHeight,
         selected: Binding<TabBarItem>,
         content: @escaping (TabBarItem) -> Content,
         barContent: @escaping ([TabBarItem]) -> BarContent
@@ -28,6 +30,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         self.content = content
         self.barContent = barContent
         self.tabBarHeight = tabBarHeight
+        self.bottomPadding = bottomPadding
     }
     
     private var allTabs: [TabBarItem] {
@@ -40,7 +43,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                 ZStackWithBackground {
                     content(tabItem)
                         .tag(tabItem)
-                        .padding(.bottom, tabBarHeight)
+                        .padding(.bottom, bottomPadding)
                 }
             }
         }
