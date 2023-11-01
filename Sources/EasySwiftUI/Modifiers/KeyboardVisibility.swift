@@ -22,7 +22,7 @@ private struct KeyboardShowingEnvironmentKey: EnvironmentKey {
     static let defaultValue: Bool = false
 }
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     var isKeyboardShowing: Bool {
         get { self[KeyboardShowingEnvironmentKey.self] }
         set { self[KeyboardShowingEnvironmentKey.self] = newValue }
