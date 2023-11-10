@@ -17,43 +17,76 @@ import Combine
 public protocol DefaultsStoragable {
     associatedtype UserDefaultsKeyType: RawRepresentable where UserDefaultsKeyType.RawValue == String
     
-    static func saveInDefaults(_ value: Any?, for key: UserDefaultsKeyType)
-    static func getFromDefaults<T>(_ key: UserDefaultsKeyType) -> T?
+    static func saveInDefaults(_ value: Any?, for key: UserDefaultsKeyType, in group: String?)
+    static func getFromDefaults<T>(_ key: UserDefaultsKeyType, in group: String?) -> T?
+    
+    static func saveAsData<T: Codable>(_ value: T, for key: UserDefaultsKeyType, in group: String?)
+    static func loadAsData<T: Codable>(for key: UserDefaultsKeyType, in group: String?) -> T?
+    
+    static func userDefaults(of group: String?) -> UserDefaults?
+    static func removeObject(by key: UserDefaultsKeyType, in group: String?)
 }
 
 public extension DefaultsStoragable {
-    static func saveInDefaults(_ value: Any?, for key: UserDefaultsKeyType) {
+    static func userDefaults(of group: String?) -> UserDefaults? {
+        guard let group else { return .standard }
+        
+        return UserDefaults(suiteName: group)
+    }
+    
+    static func saveInDefaults(_ value: Any?, for key: UserDefaultsKeyType, in group: String? = nil) {
+        guard let defaults = userDefaults(of: group) else { return }
+        
         if let enumValue = value as? any RawRepresentable {
-            UserDefaults.standard.set(enumValue.rawValue, forKey: key.rawValue)
+            defaults.set(enumValue.rawValue, forKey: key.rawValue)
         } else {
-            UserDefaults.standard.set(value, forKey: key.rawValue)
+            defaults.set(value, forKey: key.rawValue)
         }
     }
     
-    static func getFromDefaults<T>(_ key: UserDefaultsKeyType) -> T? {
-        return UserDefaults.standard.value(forKey: key.rawValue) as? T
+    static func getFromDefaults<T>(_ key: UserDefaultsKeyType, in group: String? = nil) -> T? {
+        guard let defaults = userDefaults(of: group) else { return nil }
+        
+        return defaults.value(forKey: key.rawValue) as? T
     }
     
-    static func getFromDefaults<T: RawRepresentable>(_ key: UserDefaultsKeyType) -> T? {
-        guard let value = UserDefaults.standard.object(forKey: key.rawValue) as? T.RawValue else {
+    static func getFromDefaults<T: RawRepresentable>(_ key: UserDefaultsKeyType, in group: String? = nil) -> T? {
+        guard let defaults = userDefaults(of: group),
+              let value = defaults.object(forKey: key.rawValue) as? T.RawValue else {
             return nil
         }
-
+        
         return T(rawValue: value)
     }
     
-    static func saveAsData<T: Codable>(_ value: T, for key: UserDefaultsKeyType) {
+    static func saveAsData<T: Codable>(_ value: T, for key: UserDefaultsKeyType, in group: String? = nil) {
+        guard let defaults = userDefaults(of: group) else { return }
+        
         let data = try? JSONEncoder().encode(value)
-        UserDefaults.standard.set(data, forKey: key.rawValue)
+        defaults.set(data, forKey: key.rawValue)
     }
     
-    static func loadAsData<T: Codable>(for key: UserDefaultsKeyType) -> T? {
-        guard let data = UserDefaults.standard.object(forKey: key.rawValue) as? Data else {
+    static func loadAsData<T: Codable>(for key: UserDefaultsKeyType, in group: String? = nil) -> T? {
+        guard let defaults = userDefaults(of: group),
+              let data = defaults.object(forKey: key.rawValue) as? Data else {
             return nil
         }
         
         let value = try? JSONDecoder().decode(T.self, from: data)
         return value
+    }
+    
+    static func removeObject(by key: UserDefaultsKeyType, in group: String? = nil) {
+        guard let defaults = userDefaults(of: group) else { return }
+        defaults.removeObject(forKey: key.rawValue)
+    }
+    
+    static func isTrue(for key: UserDefaultsKeyType, in group: String? = nil) -> Bool {
+        if let value: Bool = getFromDefaults(key, in: group) {
+            return value
+        }
+        
+        return false
     }
 }
 

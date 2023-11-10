@@ -64,7 +64,7 @@ public extension View {
         alignment: Alignment,
         width: CGFloat? = nil,
         offset: CGPoint = CGPoint(x: 0, y: 0),
-        item: @escaping () -> Item
+        @ViewBuilder item: @escaping () -> Item
     ) -> some View {
         self
             .overlay(alignment: .top) {
