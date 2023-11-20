@@ -53,12 +53,12 @@ fileprivate struct FontModifier: ViewModifier {
 }
 
 public extension View {
-    func customFont(_ font: Font, color: Color? = EasySwiftUI.appForeground, scaleFactor: CGFloat = 0.7) -> some View {
+    func customFont(_ font: Font, color: Color? = EasySwiftUI.appForeground, scaleFactor: CGFloat = EasySwiftUI.textScaleFactor) -> some View {
         self
             .modifier(FontModifier(font: font, color: color, scaleFactor: scaleFactor))
     }
     
-    func customFont(_ font: FontType, size: Double, color: Color? = EasySwiftUI.appForeground, scaleFactor: CGFloat = 0.7) -> some View {
+    func customFont(_ font: FontType, size: Double, color: Color? = EasySwiftUI.appForeground, scaleFactor: CGFloat = EasySwiftUI.textScaleFactor) -> some View {
         self
             .customFont(.system(size: size, weight: font.weight), color: color, scaleFactor: scaleFactor)
     }

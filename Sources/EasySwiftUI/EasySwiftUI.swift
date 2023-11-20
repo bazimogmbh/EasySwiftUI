@@ -15,6 +15,7 @@ public enum EasySwiftUI {
     public static var navigationBarHeight: CGFloat = 50
     public static var navigationBarEdges: SwiftUI.EdgeInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
     public static var tabBarHeight: CGFloat = 76
+    public static var textScaleFactor: CGFloat = 0.7
     
     public static func configureDefault(
         appBackground: Color,
@@ -22,13 +23,14 @@ public enum EasySwiftUI {
         navBarColor: Color,
         navigationBarHeight: CGFloat,
         navigationBarEdges: SwiftUI.EdgeInsets,
-        tabBarHeight: CGFloat
+        tabBarHeight: CGFloat,
+        textScaleFactor: CGFloat = 0.7
     ) {
         self.appBackground = appBackground
         self.appForeground = appForeground
         self.navBarColor = navBarColor
         self.navigationBarHeight = navigationBarHeight
         self.navigationBarEdges = navigationBarEdges
-        self.tabBarHeight = tabBarHeight
+        self.textScaleFactor = textScaleFactor
     }
 }
