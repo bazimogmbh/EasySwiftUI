@@ -103,6 +103,8 @@ public extension RedirectService {
                     UserDefaults.standard.set(currentVersion, forKey: lastVersionPromptedForReviewKey)
                     showAlertDoYouLikeOurApp(by: appStoreId)
                 }
+            } else {
+                showRateApp()
             }
         }
     }
