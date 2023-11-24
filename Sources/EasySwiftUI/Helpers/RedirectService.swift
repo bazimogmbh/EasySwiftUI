@@ -100,6 +100,7 @@ public extension RedirectService {
         if let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String {
             if count >= countToShow && currentVersion != lastVersionPromptedForReview {
                 runOnMainActor {
+                    UserDefaults.standard.set(0, forKey: doYouLikeCounterKey)
                     UserDefaults.standard.set(currentVersion, forKey: lastVersionPromptedForReviewKey)
                     showAlertDoYouLikeOurApp(by: appStoreId)
                 }
