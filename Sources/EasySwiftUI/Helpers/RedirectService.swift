@@ -63,7 +63,7 @@ public enum RedirectService {
     }
     
     public static func redirectToReview(by appStoreId: String) {
-        if let writeReviewURL = URL(string: "https://apps.apple.com/app/id\(appStoreId)?action=write-review") {
+        if let writeReviewURL = URL(string: "https://itunes.apple.com/app/id\(appStoreId)?action=write-review") {
             UIApplication.shared.open(writeReviewURL, options: [:], completionHandler: nil)
         }
     }
