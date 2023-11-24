@@ -55,6 +55,74 @@ public enum RedirectService {
             vc.present(activityViewController, animated: true, completion: nil)
         }
     }
+    
+    public static func showRateApp() {
+        if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+            SKStoreReviewController.requestReview(in: scene)
+        }
+    }
+    
+    public static func redirectToReview(by appStoreId: String) {
+        if let writeReviewURL = URL(string: "https://apps.apple.com/app/id\(appStoreId)?action=write-review") {
+            UIApplication.shared.open(writeReviewURL, options: [:], completionHandler: nil)
+        }
+    }
+}
+
+public extension RedirectService {
+    static func showAlertPlzHelpUsToGrow() {
+        presentAlert(title: "Please help us to grow 🙏"~,
+                     message: "Can you show us some love?"~,
+                     primaryAction: UIAlertAction(title: "Sure!"~, style: .default, handler: { _ in showRateApp() }),
+                     secondaryAction: UIAlertAction(title: "Next Time"~, style: .cancel, handler: nil)
+        )
+    }
+    
+    static func showAlertDoYouLikeOurApp(by appStoreId: String) {
+        presentAlert(title: "Do you like our app?",
+                     message: "",
+                     primaryAction: UIAlertAction(title: "Yes 😁"~, style: .default, handler: { _ in redirectToReview(by: appStoreId) }),
+                     secondaryAction: UIAlertAction(title: "No 🙁"~, style: .cancel, handler: nil)
+        )
+    }
+    
+    static func showAlertDoYouLikeOurAppPeriodically(by appStoreId: String, countToShow: Int = 10) {
+        let doYouLikeCounterKey = "doYouLikeCounter"
+        let lastVersionPromptedForReviewKey = "lastVersionPromptedForReview"
+        
+        var count = UserDefaults.standard.integer(forKey: doYouLikeCounterKey)
+        count += 1
+        UserDefaults.standard.set(count, forKey: doYouLikeCounterKey)
+        
+        let lastVersionPromptedForReview = UserDefaults.standard.string(forKey: lastVersionPromptedForReviewKey)
+        let infoDictionaryKey = kCFBundleVersionKey as String
+        
+        if let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String {
+            if count >= countToShow && currentVersion != lastVersionPromptedForReview {
+                runOnMainActor {
+                    UserDefaults.standard.set(currentVersion, forKey: lastVersionPromptedForReviewKey)
+                    showAlertDoYouLikeOurApp(by: appStoreId)
+                }
+            }
+        }
+    }
+    
+    private static func presentAlert(title: String, message: String, primaryAction: UIAlertAction = .OK, secondaryAction: UIAlertAction? = nil, tertiaryAction: UIAlertAction? = nil) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alert.view.tintColor = .white
+            alert.addAction(primaryAction)
+            if let secondary = secondaryAction { alert.addAction(secondary) }
+            if let tertiary = tertiaryAction { alert.addAction(tertiary) }
+            UIApplication.topViewController?.present(alert, animated: true, completion: nil)
+        }
+    }
+}
+
+public extension UIAlertAction {
+    static var OK: UIAlertAction {
+        UIAlertAction(title: "Ok", style: .cancel, handler: nil)
+    }
 }
 
 fileprivate extension ColorScheme {

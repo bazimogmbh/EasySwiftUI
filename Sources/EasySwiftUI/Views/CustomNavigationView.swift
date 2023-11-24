@@ -8,6 +8,7 @@
 import SwiftUI
 
 public struct CustomNavigationView<BarContent: View, Content: View>: View {
+    let navBar: BackgroundState
     let background: BackgroundState
     let alignment: Alignment
     var barHeight: CGFloat
@@ -15,12 +16,14 @@ public struct CustomNavigationView<BarContent: View, Content: View>: View {
     let content: Content
     
     public init(
-        _ background: BackgroundState = .color(EasySwiftUI.navBarColor),
+        _ navBar: BackgroundState = .color(EasySwiftUI.navBarColor),
+        background: BackgroundState = .color(EasySwiftUI.appBackground),
         alignment: Alignment = .center,
         barHeight: CGFloat = EasySwiftUI.navigationBarHeight,
         @ViewBuilder barContent: () -> BarContent,
         @ViewBuilder content: () -> Content
     ) {
+        self.navBar = navBar
         self.background = background
         self.alignment = alignment
         self.barHeight = barHeight
@@ -40,6 +43,14 @@ public struct CustomNavigationView<BarContent: View, Content: View>: View {
                 barContent
                     .frame(height: barHeight)
                     .frame(maxWidth: .infinity)
+                    .background {
+                        switch navBar {
+                        case .material(let material):
+                            BlurView(style: material)
+                        case .color(let color):
+                            color
+                        }
+                    }
                     .zIndex(2)
             }
         }
