@@ -112,7 +112,6 @@ public extension RedirectService {
     private static func presentAlert(title: String, message: String, primaryAction: UIAlertAction = .OK, secondaryAction: UIAlertAction? = nil, tertiaryAction: UIAlertAction? = nil) {
         DispatchQueue.main.async {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alert.view.tintColor = .white
             alert.addAction(primaryAction)
             if let secondary = secondaryAction { alert.addAction(secondary) }
             if let tertiary = tertiaryAction { alert.addAction(tertiary) }
