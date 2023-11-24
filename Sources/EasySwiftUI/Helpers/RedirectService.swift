@@ -105,7 +105,10 @@ public extension RedirectService {
                     showAlertDoYouLikeOurApp(by: appStoreId)
                 }
             } else {
-                showRateApp()
+                Task {
+                    try? await Task.sleep(nanoseconds: UInt64(3e9))
+                    showRateApp()
+                }
             }
         }
     }
