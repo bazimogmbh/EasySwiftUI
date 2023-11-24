@@ -119,6 +119,7 @@ public extension RedirectService {
         DispatchQueue.main.async {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             alert.addAction(primaryAction)
+            alert.preferredAction = primaryAction
             if let secondary = secondaryAction { alert.addAction(secondary) }
             if let tertiary = tertiaryAction { alert.addAction(tertiary) }
             UIApplication.topViewController?.present(alert, animated: true, completion: nil)
