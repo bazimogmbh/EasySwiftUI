@@ -44,12 +44,15 @@ public struct CustomNavigationView<BarContent: View, Content: View>: View {
                     .frame(height: barHeight)
                     .frame(maxWidth: .infinity)
                     .background {
-                        switch navBar {
-                        case .material(let material):
-                            BlurView(style: material)
-                        case .color(let color):
-                            color
+                        Group {
+                            switch navBar {
+                            case .material(let material):
+                                BlurView(style: material)
+                            case .color(let color):
+                                color
+                            }
                         }
+                        .ignoresSafeArea()
                     }
                     .zIndex(2)
             }
