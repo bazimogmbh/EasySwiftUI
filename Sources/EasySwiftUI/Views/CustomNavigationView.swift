@@ -37,8 +37,8 @@ public struct CustomNavigationView<BarContent: View, Content: View>: View {
                 Color.clear
                 
                 content
+                    .padding(.top, barHeight)
             }
-            .padding(.top, barHeight)
             .overlay(alignment: .top) {
                 barContent
                     .frame(height: barHeight)
