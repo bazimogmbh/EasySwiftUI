@@ -59,12 +59,13 @@ public struct CustomNavigationView<BarContent: View, Content: View>: View {
 
 public extension CustomNavigationView where BarContent == EmptyView {
     init(
+        _ navBar: BackgroundState = .color(EasySwiftUI.navBarColor),
         _ background: BackgroundState = .color(EasySwiftUI.navBarColor),
         alignment: Alignment = .center,
         barHeight: CGFloat = EasySwiftUI.navigationBarHeight,
         @ViewBuilder content: () -> Content
     ) {
-        self.init(background, alignment: alignment, barHeight: barHeight, barContent: { EmptyView() }, content: content)
+        self.init(navBar, background: background, alignment: alignment, barHeight: barHeight, barContent: { EmptyView() }, content: content)
     }
 }
 
