@@ -60,13 +60,21 @@ public extension Coordinated {
     }
     
     @MainActor func closeTopScreen() {
-        if let lastIndex = self.navigationStack.lastIndex(where: { $0 != nil }) {
-            self.navigationStack[lastIndex] = nil
+        runOnMainActor { [weak self] in
+            guard let self else { return }
+            
+            if let lastIndex = self.navigationStack.lastIndex(where: { $0 != nil }) {
+                self.navigationStack[lastIndex] = nil
+            }
         }
     }
     
     @MainActor func close(by id: FullState.ID) {
-        self.navigationStack = self.navigationStack.filter({ $0?.state.id != id })
+        runOnMainActor { [weak self] in
+            guard let self else { return }
+            
+            self.navigationStack = self.navigationStack.filter({ $0?.state.id != id })
+        }
     }
 }
 
