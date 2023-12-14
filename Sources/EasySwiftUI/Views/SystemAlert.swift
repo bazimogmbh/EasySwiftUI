@@ -45,9 +45,20 @@ public struct SystemAlert: View {
     public let title: String
     public let message: String
     public let buttons: [SystemAlertButton]
+    
+    public init(
+        title: String,
+        message: String,
+        buttons: [SystemAlertButton]
+    ) {
+        self.title = title
+        self.message = message
+        self.buttons = buttons
+    }
 
     public var body: some View {
         SystemAlertContainer(title: title, message: message, buttons: buttons) {
+            
         }
     }
 }
@@ -58,6 +69,16 @@ public struct InputSystemAlert: View {
     public let title: String
     public let message: String
     public let okAction: @MainActor (String) -> ()
+    
+    public init(
+        title: String,
+        message: String,
+        okAction: @escaping (String) -> Void
+    ) {
+        self.title = title
+        self.message = message
+        self.okAction = okAction
+    }
 
     public var body: some View {
         SystemAlertContainer(title: title, message: message, buttons: [
@@ -80,6 +101,18 @@ public struct SystemAlertContainer<Content: View>: View {
     public let message: String
     public let buttons: [SystemAlertButton]
     @ViewBuilder public let content: () -> Content
+    
+    public init(
+        title: String,
+        message: String,
+        buttons: [SystemAlertButton],
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.title = title
+        self.message = message
+        self.buttons = buttons
+        self.content = content
+    }
     
     public var body: some View {
         ZStackWithBackground(.color(.transparent)) {
