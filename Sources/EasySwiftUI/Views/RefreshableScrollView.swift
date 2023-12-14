@@ -35,6 +35,18 @@ public struct RefreshableScrollView<Content: View, RefreshContent: View>: View {
     
     private let coordinateSpace: String = "coordinateSpace"
     
+    public init(
+        minOffsetToRefresh: CGFloat = 60,
+        action: @escaping () async -> Void,
+        refreshContent: @escaping () -> RefreshContent,
+        content: @escaping () -> Content
+    ) {
+        self.minOffsetToRefresh = minOffsetToRefresh
+        self.action = action
+        self.refreshContent = refreshContent
+        self.content = content
+    }
+    
     public var body: some View {
         ScrollView {
             Color.clear
