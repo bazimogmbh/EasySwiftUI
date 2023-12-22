@@ -15,14 +15,6 @@ fileprivate struct ScrollPositionKey: PreferenceKey {
     }
 }
 
-fileprivate struct RefreshContentPositionKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
-    }
-}
-
 public struct RefreshableScrollView<Content: View, RefreshContent: View>: View {
     @State private var isReady: Bool = false
     @State private var isRefreshing: Bool = false
@@ -49,14 +41,16 @@ public struct RefreshableScrollView<Content: View, RefreshContent: View>: View {
     
     public var body: some View {
         ScrollView {
-            Color.clear
-                .frame(height: 1)
-                .background(GeometryReader { proxy in
-                    Color.clear.preference(key: ScrollPositionKey.self, value: proxy.frame(in: .named(coordinateSpace)).origin.y)
-                })
-                .onPreferenceChange(ScrollPositionKey.self, perform: { perform($0) })
-            
-            content()
+            ZStack(alignment: .top) {
+                Color.clear
+                    .frame(height: 1)
+                    .background(GeometryReader { proxy in
+                        Color.clear.preference(key: ScrollPositionKey.self, value: proxy.frame(in: .named(coordinateSpace)).origin.y)
+                    })
+                    .onPreferenceChange(ScrollPositionKey.self, perform: { perform($0) })
+                
+                content()
+            }
         }
         .coordinateSpace(name: coordinateSpace)
         .padding(.top, isRefreshing ? refreshContentHeight : 0)
