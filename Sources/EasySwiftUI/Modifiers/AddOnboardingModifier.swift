@@ -35,11 +35,11 @@ open class OnboardingBaseViewModel<T: OnboardingStepProtocol>: ObservableObject,
     
     private var isShowedAlertPlzHelpUsToGrow = false
     
-    public var steps: [T] {
+    open var steps: [T] {
         T.allCases as! [T]
     }
     
-    public var stepsForDisplay: [T] {
+    open var stepsForDisplay: [T] {
         steps.filter({ !$0.isClosePage })
     }
     
@@ -47,7 +47,7 @@ open class OnboardingBaseViewModel<T: OnboardingStepProtocol>: ObservableObject,
         self.onboardingStep = firstStep
     }
     
-    public func handleNext() {
+    open func handleNext() {
         withAnimation {
             if let newStep = T(rawValue: self.onboardingStep.rawValue + 1) {
                 self.onboardingStep = newStep
@@ -55,7 +55,7 @@ open class OnboardingBaseViewModel<T: OnboardingStepProtocol>: ObservableObject,
         }
     }
     
-    public func handle(_ step: T) {
+    open func handle(_ step: T) {
         runOnMainActor { [weak self] in
             guard let self else { return }
             
