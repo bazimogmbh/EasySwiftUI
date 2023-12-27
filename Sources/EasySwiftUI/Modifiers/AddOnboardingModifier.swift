@@ -105,7 +105,7 @@ fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView
 }
 
 public extension View {
-    func addOnboarding<VM: OnboardingHandlable, OnboardingView: View>(
+    func easyOnboardingCover<VM: OnboardingHandlable, OnboardingView: View>(
         vm: VM,
         @ViewBuilder onboardingContent: @escaping () -> OnboardingView
     ) -> some View {
