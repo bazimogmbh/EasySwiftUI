@@ -72,6 +72,8 @@ open class OnboardingBaseViewModel<T: OnboardingStepProtocol>: ObservableObject,
 }
 
 fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView: View>: ViewModifier {
+    @State private var isNeeToRunAction = true
+    
     @StateObject var vm: VM
     let transition: AnyTransition?
     @ViewBuilder let onboardingContent: () -> OnboardingView
@@ -100,8 +102,9 @@ fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView
     }
     
     @MainActor private func dismissAction() {
-        if !vm.isFirstRun {
+        if !vm.isFirstRun, isNeeToRunAction {
             vm.onCloseOnboarding()
+            isNeeToRunAction = false
         }
     }
 }
