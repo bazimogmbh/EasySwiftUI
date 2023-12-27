@@ -73,10 +73,12 @@ open class OnboardingBaseViewModel<T: OnboardingStepProtocol>: ObservableObject,
 
 fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView: View>: ViewModifier {
     @StateObject var vm: VM
+    let transition: AnyTransition?
     @ViewBuilder let onboardingContent: () -> OnboardingView
     
-    init(vm: VM, onboardingContent: @escaping () -> OnboardingView) {
+    init(vm: VM, transition: AnyTransition? = .opacity, onboardingContent: @escaping () -> OnboardingView) {
         self._vm = StateObject(wrappedValue: vm)
+        self.transition = transition
         self.onboardingContent = onboardingContent
     }
 
@@ -88,7 +90,7 @@ fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView
                 content
             }
         }
-        .easyFullScreenCover(isPresented: $vm.isFirstRun) {
+        .easyFullScreenCover(isPresented: $vm.isFirstRun, transition: transition) {
             onboardingContent()
         }
         .onChange(of: vm.isFirstRun) { isFirstRun in
@@ -107,9 +109,10 @@ fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView
 public extension View {
     func easyOnboardingCover<VM: OnboardingHandlable, OnboardingView: View>(
         vm: VM,
+        transition: AnyTransition? = .opacity,
         @ViewBuilder onboardingContent: @escaping () -> OnboardingView
     ) -> some View {
-        modifier(AddOnboardingModifier(vm: vm, onboardingContent: onboardingContent))
+        modifier(AddOnboardingModifier(vm: vm, transition: transition, onboardingContent: onboardingContent))
     }
 }
 
