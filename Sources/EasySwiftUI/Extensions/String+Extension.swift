@@ -9,5 +9,7 @@ import Foundation
 
 postfix operator ~
 postfix func ~(string: String) -> String {
-    return NSLocalizedString(string, comment: "")
+//    return String(localized: string, bundle: .module)
+    return NSLocalizedString(string, bundle: .module, comment: "")
+//    return NSLocalizedString(string, comment: "")
 }
