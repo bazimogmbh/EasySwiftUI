@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "\"Can you show us some love?\"" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -665,6 +668,12 @@
           }
         }
       }
+    },
+    "Cancel" : {
+
+    },
+    "Ok" : {
+
     }
   },
   "version" : "1.0"

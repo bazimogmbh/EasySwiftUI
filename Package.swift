@@ -27,7 +27,7 @@ let package = Package(
         .target(
             name: "EasySwiftUI",
             dependencies: [],
-            resources: [.copy("Resources")]
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "EasySwiftUITests",
