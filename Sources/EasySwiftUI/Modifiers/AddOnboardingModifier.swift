@@ -48,10 +48,8 @@ open class OnboardingBaseViewModel<T: OnboardingStepProtocol>: ObservableObject,
     }
     
     open func handleNext() {
-        withAnimation {
-            if let newStep = T(rawValue: self.onboardingStep.rawValue + 1) {
-                self.onboardingStep = newStep
-            }
+        if let newStep = T(rawValue: self.onboardingStep.rawValue + 1) {
+            self.onboardingStep = newStep
         }
     }
     
