@@ -8,13 +8,13 @@
 import Foundation
 
 postfix operator ~
-//postfix func ~(string: String) -> String {
-//    return String(localized: .init(string), bundle: .module)
-//}
-
 postfix func ~(string: String) -> String {
-    NSLocalizedString(string, bundle: .module, comment: "")
-    }
+    return String(localized: .init(string), bundle: .module)
+}
+
+//postfix func ~(string: String) -> String {
+//    NSLocalizedString(string, bundle: .module, comment: "")
+//}
 
 //import SwiftUI
 //

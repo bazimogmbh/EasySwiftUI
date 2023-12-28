@@ -27,7 +27,7 @@ let package = Package(
         .target(
             name: "EasySwiftUI",
             dependencies: [],
-            resources: [.process("Localizable.xcstrings")]
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "EasySwiftUITests",
