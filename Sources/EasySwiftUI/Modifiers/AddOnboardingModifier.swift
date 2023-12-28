@@ -54,17 +54,13 @@ open class OnboardingBaseViewModel<T: OnboardingStepProtocol>: ObservableObject,
     }
     
     open func handle(_ step: T) {
-        runOnMainActor { [weak self] in
-            guard let self else { return }
-            
-            if step.isAskReviewPage, !self.isShowedAlertPlzHelpUsToGrow {
-                RedirectService.showAlertPlzHelpUsToGrow()
-                self.isShowedAlertPlzHelpUsToGrow = true
-            }
-            
-            if step.isClosePage {
-                self.dismiss()
-            }
+        if step.isAskReviewPage, !self.isShowedAlertPlzHelpUsToGrow {
+            RedirectService.showAlertPlzHelpUsToGrow()
+            self.isShowedAlertPlzHelpUsToGrow = true
+        }
+        
+        if step.isClosePage {
+            self.dismiss()
         }
     }
 }
