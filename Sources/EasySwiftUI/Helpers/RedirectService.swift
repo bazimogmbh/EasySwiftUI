@@ -57,7 +57,7 @@ public enum RedirectService {
     }
     
     public static func showRateApp() {
-        runOnMainActor {
+        Task { @MainActor in
             if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
                 SKStoreReviewController.requestReview(in: scene)
             }
@@ -101,7 +101,7 @@ public extension RedirectService {
         
         if let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String {
             if count >= countToShow && currentVersion != lastVersionPromptedForReview {
-                runOnMainActor {
+                Task { @MainActor in
                     UserDefaults.standard.set(0, forKey: doYouLikeCounterKey)
                     UserDefaults.standard.set(currentVersion, forKey: lastVersionPromptedForReviewKey)
                     showAlertDoYouLikeOurApp(by: appStoreId)

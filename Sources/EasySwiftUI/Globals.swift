@@ -11,24 +11,6 @@ import SwiftUI
 public typealias OptionalVoid = (() -> ())?
 public typealias OptionalVoidWithError = ((Error) -> ())?
 
-public func runOnMainActor(_ body: @MainActor @escaping () -> Void) {
-    Task {
-        await MainActor.run {
-            body()
-        }
-    }
-}
-
-public func onMainActorWithAnimation(_ body: @MainActor @escaping () -> Void) {
-    Task {
-        await MainActor.run {
-            withAnimation {
-                body()
-            }
-        }
-    }
-}
-
 public struct Build {
     public static var isDebug: Bool {
         #if DEBUG
