@@ -39,6 +39,18 @@ public struct CustomButton<Content>: View where Content: View {
         self.label = label
     }
     
+    public init(
+        effect: ButtonTapEffect = .scale,
+        action: (@MainActor () -> Void)?,
+        actionWithProxy: (@MainActor (GeometryProxy) -> Void)?,
+        @ViewBuilder label: @escaping () -> Content
+    ) {
+        self.tapEffect = effect
+        self.action = action
+        self.actionWithProxy = actionWithProxy
+        self.label = label
+    }
+    
     public var body: some View {
         if actionWithProxy != nil {
             button()
