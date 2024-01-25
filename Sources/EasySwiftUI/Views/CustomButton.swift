@@ -9,7 +9,7 @@
 import SwiftUI
 
 public enum ButtonTapEffect {
-    case opacity, scale
+    case `default`, scale
 }
 
 @available(macOS 12, *)
@@ -72,7 +72,7 @@ fileprivate extension View {
     @ViewBuilder
     func addButtonStyle(by tapEffect: ButtonTapEffect) -> some View {
         switch tapEffect {
-        case .opacity:
+        case .default:
             self
         case .scale:
             self
