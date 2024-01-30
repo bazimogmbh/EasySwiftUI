@@ -1,13 +1,13 @@
 //
-//  SheetContainer.swift
-//  
+//  EasySheetContainer.swift
+//
 //
 //  Created by Yevhenii Korsun on 29.01.2024.
 //
 
 import SwiftUI
 
-public struct SheetContainer<Content: View>: View {
+public struct EasySheetContainer<Content: View>: View {
     let content: () -> Content
     
     init(content: @escaping () -> Content) {
