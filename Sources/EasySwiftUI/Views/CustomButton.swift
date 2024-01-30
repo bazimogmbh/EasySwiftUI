@@ -24,9 +24,7 @@ public struct CustomButton<Content>: View where Content: View {
         action: @escaping @MainActor () -> Void,
         @ViewBuilder label: @escaping () -> Content
     ) {
-        self.tapEffect = effect
-        self.action = action
-        self.label = label
+        self.init(effect: effect, action: action, actionWithProxy: nil, label: label)
     }
     
     public init(
@@ -34,9 +32,7 @@ public struct CustomButton<Content>: View where Content: View {
         action: @escaping @MainActor (GeometryProxy) -> Void,
         @ViewBuilder label: @escaping () -> Content
     ) {
-        self.tapEffect = effect
-        self.actionWithProxy = action
-        self.label = label
+        self.init(effect: effect, action: nil, actionWithProxy: action, label: label)
     }
     
     public init(
