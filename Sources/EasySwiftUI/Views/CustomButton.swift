@@ -14,6 +14,8 @@ public enum ButtonTapEffect {
 
 @available(macOS 12, *)
 public struct CustomButton<Content>: View where Content: View {
+    @State private var isShowProxy = false
+    
     private var tapEffect: ButtonTapEffect = .scale
     private var action: (@MainActor () -> Void)? = nil
     private var actionWithProxy: (@MainActor (GeometryProxy) -> Void)? = nil
@@ -48,16 +50,27 @@ public struct CustomButton<Content>: View where Content: View {
     }
     
     public var body: some View {
-        if actionWithProxy != nil {
-            button()
-                .hidden()
-                .overlay {
+        button {
+            if actionWithProxy != nil {
+                isShowProxy = true
+            } else {
+                action?()
+            }
+        }
+        .background {
+            ZStack {
+                if isShowProxy {
                     GeometryReader { proxy in
-                        button(action: { actionWithProxy?(proxy) })
+                        Color.clear
+                            .onAppear {
+                                if isShowProxy {
+                                    actionWithProxy?(proxy)
+                                    isShowProxy = false
+                                }
+                            }
                     }
                 }
-        } else {
-            button(action: action)
+            }
         }
     }
     
