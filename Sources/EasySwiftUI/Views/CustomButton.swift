@@ -81,9 +81,7 @@ public struct CustomButton<Content>: View where Content: View {
         } label: {
             label()
                 .allowsHitTesting(false)
-                .overlay {
-                    Color.white.opacity(0.011)
-                }
+                .overlay(Color.transparent)
         }
         .addButtonStyle(by: tapEffect)
     }
