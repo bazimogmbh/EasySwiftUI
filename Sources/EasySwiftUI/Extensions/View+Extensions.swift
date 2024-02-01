@@ -160,7 +160,7 @@ public extension View {
         }
     }
     
-    func easyApply(@ViewBuilder _ completion: (Self) -> some View) -> some View {
+    func apply(@ViewBuilder _ completion: (Self) -> some View) -> some View {
         completion(self)
     }
 }
