@@ -159,6 +159,10 @@ public extension View {
             self
         }
     }
+    
+    func easyApply(@ViewBuilder _ completion: (Self) -> some View) -> some View {
+        completion(self)
+    }
 }
 
 fileprivate struct ScrollButtonStyle: ButtonStyle {
