@@ -10,7 +10,7 @@ import SwiftUI
 public struct EasyDismissContainer<Content: View>: View {
     @Environment(\.easyDismiss) var easyDismiss
     @State private var isShow: Bool = false
-    let content: (Binding<Bool>) -> Content
+    private let content: (Binding<Bool>) -> Content
     
     public init(content: @escaping (Binding<Bool>) -> Content) {
         self.content = content

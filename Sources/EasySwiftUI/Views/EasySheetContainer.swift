@@ -8,9 +8,9 @@
 import SwiftUI
 
 public struct EasySheetContainer<Content: View>: View {
-    let content: () -> Content
+    private let content: () -> Content
     
-    init(content: @escaping () -> Content) {
+    public init(content: @escaping () -> Content) {
         self.content = content
     }
     
