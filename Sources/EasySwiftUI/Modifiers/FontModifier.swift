@@ -81,6 +81,10 @@ public extension View {
 
 public struct AppFont: Hashable {
     let name: String
+    
+    public init(_ name: String) {
+        self.name = name
+    }
 }
 
 public extension View {
