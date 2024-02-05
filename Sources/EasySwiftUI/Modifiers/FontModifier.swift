@@ -76,3 +76,23 @@ public extension View {
 //            .customFont(.custom(font.rawValue, size: size), color: color, scaleFactor: scaleFactor)
 //    }
 //}
+
+// MARK: - New logic
+
+public struct AppFont: Hashable {
+    let name: String
+}
+
+public extension View {
+    func customFont(_ font: AppFont, size: Double, color: Color? = EasySwiftUI.appForeground, scaleFactor: CGFloat = 0.7) -> some View {
+        self
+            .customFont(.custom(font.name, size: size), color: color, scaleFactor: scaleFactor)
+    }
+}
+
+// MARK: - How to use
+
+//extension AppFont {
+//    static let mainFont = AppFont(name: "Font name")
+//    static let boldFont = AppFont(name: "Font name")
+//}
