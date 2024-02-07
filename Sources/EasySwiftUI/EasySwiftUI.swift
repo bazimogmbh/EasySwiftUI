@@ -31,6 +31,7 @@ public enum EasySwiftUI {
         self.navBarColor = navBarColor
         self.navigationBarHeight = navigationBarHeight
         self.navigationBarEdges = navigationBarEdges
+        self.tabBarHeight = tabBarHeight
         self.textScaleFactor = textScaleFactor
     }
 }
