@@ -6,7 +6,7 @@
 //
 
 
-import SwiftUI
+@_exported import SwiftUI
 
 public typealias OptionalVoid = (() -> ())?
 public typealias OptionalVoidWithError = ((Error) -> ())?
