@@ -11,10 +11,28 @@ import SwiftUI
 import StoreKit
 import SafariServices
 
+public struct RedirectItem: Hashable {
+    let url: String
+    
+    public init(_ url: String) {
+        self.url = url
+    }
+}
+
+public extension RedirectItem {
+    func url(_ url: String) -> RedirectItem {
+        RedirectItem(url)
+    }
+}
+
 public enum RedirectService {
     static private let supportService = SupportEmailService()
     
-    public static func redirect(to url: String, scheme: ColorScheme) {
+    public static func redirect(to item: RedirectItem, scheme: ColorScheme) {
+        redirect(to: item.url, scheme: scheme)
+    }
+    
+    static func redirect(to url: String, scheme: ColorScheme) {
         if let url = URL(string: url) {
             let safari = SFSafariViewController(url: url)
             safari.overrideUserInterfaceStyle = scheme.style
