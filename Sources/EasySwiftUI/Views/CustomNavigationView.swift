@@ -33,7 +33,7 @@ public struct CustomNavigationView<BarContent: View, Content: View>: View {
     
     public var body: some View {
         ZStackWithBackground(background, alignment: .top) {
-            ZStack(alignment: .center) {
+            ZStack(alignment: alignment) {
                 Color.clear
                 
                 content
