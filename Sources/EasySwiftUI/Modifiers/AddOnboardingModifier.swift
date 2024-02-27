@@ -69,10 +69,10 @@ fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView
     @State private var isNeeToRunAction = true
     
     @StateObject var vm: VM
-    let transition: AnyTransition?
+    let transition: AnyTransition
     @ViewBuilder let onboardingContent: () -> OnboardingView
     
-    init(vm: VM, transition: AnyTransition? = .opacity, onboardingContent: @escaping () -> OnboardingView) {
+    init(vm: VM, transition: AnyTransition = .opacity, onboardingContent: @escaping () -> OnboardingView) {
         self._vm = StateObject(wrappedValue: vm)
         self.transition = transition
         self.onboardingContent = onboardingContent
@@ -106,7 +106,7 @@ fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView
 public extension View {
     func easyOnboardingCover<VM: OnboardingHandlable, OnboardingView: View>(
         vm: VM,
-        transition: AnyTransition? = .opacity,
+        transition: AnyTransition = .opacity,
         @ViewBuilder onboardingContent: @escaping () -> OnboardingView
     ) -> some View {
         modifier(AddOnboardingModifier(vm: vm, transition: transition, onboardingContent: onboardingContent))

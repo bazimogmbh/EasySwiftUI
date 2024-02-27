@@ -9,63 +9,100 @@ import SwiftUI
 import Combine
 
 public struct CoordinatedItem<T> {
-    public let state: T
-    public var transition: AnyTransition? = .opacity
-    public var completion: OptionalVoid = nil
+    let date = Date()
+    let state: T
+    
+    var id: String
+    var parentId: String
+    
+    var transition: AnyTransition = .opacity
+    var animation: Animation = .linear
+    
+    var completion: OptionalVoid = nil
 }
 
 public protocol NavigationalItem: Identifiable {
-    var defaultTransition: AnyTransition? { get }
+    var defaultTransition: AnyTransition { get }
     var groupId: String? { get }
+}
+
+public extension NavigationalItem {
+    var defaultAnimation: Animation {
+        .linear
+    }
+    
+    var id: String {
+        let mirror = Mirror(reflecting: self)
+        return mirror.children.first?.label ?? ""
+    }
 }
 
 @MainActor
 public protocol Coordinated: ObservableObject {
     associatedtype FullState: NavigationalItem
     
-    @MainActor var navigationStack: [CoordinatedItem<FullState>?] { get set }
-    @MainActor func showFull(_ state: FullState, isWithAnimation: Bool, completion: OptionalVoid)
-    @MainActor func showFull(_ state: FullState, transition: AnyTransition?, isWithAnimation: Bool, completion: OptionalVoid)
     
-    @MainActor func closeTopScreen()
-    @MainActor func close(by id: FullState.ID)
+    var viewIdIfStackIsEmpty: String { get }
+    var navigationStack: [CoordinatedItem<FullState>?] { get set }
+    
+    func showFull(_ state: FullState, completion: OptionalVoid)
+    func showFull(_ state: FullState, transition: AnyTransition, animation: Animation, timeout: TimeInterval, completion: OptionalVoid)
+    func closeTopScreen()
+    
+    func close(by id: FullState.ID)
 }
 
 public extension Coordinated {
-    @MainActor func showFull(_ state: FullState, isWithAnimation: Bool = true, completion: OptionalVoid = nil) {
-        showFull(state, transition: state.defaultTransition, isWithAnimation: isWithAnimation, completion: completion)
+    func showFull(_ state: FullState, completion: OptionalVoid = nil) {
+        showFull(
+            state,
+            transition: state.defaultTransition,
+            animation: state.defaultAnimation,
+            completion: completion
+        )
     }
     
-    @MainActor func showFull(_ state: FullState, transition: AnyTransition?, isWithAnimation: Bool = true, completion: OptionalVoid = nil) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            
-            if let last = self.navigationStack.last, last?.state.id == state.id { return }
-            
-            hideKeyboard()
-            
-            if self.navigationStack.compactMap({ $0 }).isEmpty {
-                self.navigationStack = []
-            }
-            
-            if let groupId = state.groupId {
-                self.navigationStack = self.navigationStack.map { item in
-                    item?.state.groupId == groupId ? nil : item
-                }
-            }
-            
-            let item = CoordinatedItem(state: state, transition: transition, completion: completion)
-            self.navigationStack.append(item)
+    func showFull(
+        _ state: FullState,
+        transition: AnyTransition,
+        animation: Animation = .linear,
+        timeout: TimeInterval = 0,
+        completion: OptionalVoid = nil
+    ) {
+        if let date = navigationStack.last??.date, Date().timeIntervalSince(date) < timeout {
+            return
         }
+        
+        if let last = self.navigationStack.last, last?.state.id == state.id { return }
+        
+        if self.navigationStack.compactMap({ $0 }).isEmpty {
+            self.navigationStack = []
+        }
+        
+        let id = String(self.navigationStack.endIndex)
+        
+        let parentId = {
+            if let id = self.navigationStack.lastIndex(where: { $0 != nil }) {
+                return String(id)
+            }
+            
+            return self.viewIdIfStackIsEmpty
+        }()
+        
+        let item = CoordinatedItem(
+            state: state,
+            id: id,
+            parentId: parentId,
+            transition: transition,
+            animation: animation,
+            completion: completion
+        )
+        self.navigationStack.append(item)
     }
     
-    @MainActor func closeTopScreen() {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            
-            if let lastIndex = self.navigationStack.lastIndex(where: { $0 != nil }) {
-                self.navigationStack[lastIndex] = nil
-            }
+    func closeTopScreen() {
+        if let lastIndex = self.navigationStack.lastIndex(where: { $0 != nil }) {
+            self.navigationStack[lastIndex] = nil
         }
     }
     
@@ -106,62 +143,58 @@ public extension EnvironmentValues {
     }
 }
 
-fileprivate struct DismissableView<Content: View, T>: View {
+fileprivate struct DismissableView<Content: View, T>: View, Equatable {
+    static func == (lhs: DismissableView<Content, T>, rhs: DismissableView<Content, T>) -> Bool {
+        true
+    }
+    
     @State private var isShow = false
-    let transition: AnyTransition?
+    
+    let transition: AnyTransition
+    let animation: Animation
     let itemToReturn: T
+
     let completion: OptionalVoid
+    
     @ViewBuilder var content: (T) -> Content
     let closeAction: () -> ()
     
     var body: some View {
         ZStack {
-            if let transition = transition {
-                if isShow {
-                    content(itemToReturn)
-                        .transition(transition)
-                        .animation(.linear, value: isShow)
-                        .environment(\.easyDismiss, EasyDismiss {isWithAnimation in
-                            if isWithAnimation {
-                                withAnimation {
-                                    isShow = false
-                                }
-                            } else {
-                                isShow = false
-                            }
-                            
-                            completion?()
-                        })
-                        .onDisappear {
-                            if !isShow {
-                                closeAction()
-                            }
-                        }
-                }
-            } else {
+            if isShow {
                 content(itemToReturn)
-                    .environment(\.easyDismiss, EasyDismiss { _ in
+                    .transition(transition)
+                    .environment(\.easyDismiss, EasyDismiss { isWithAnimation in
+                        isShow = false
                         completion?()
-                        closeAction()
                     })
+                    .onDisappear {
+                        if !isShow {
+                            closeAction()
+                        }
+                    }
             }
         }
+        .animation(animation, value: isShow)
         .onAppear {
             hideKeyboard()
-            
-            withAnimation {
-                isShow = true
-            }
+            isShow = true
         }
     }
 }
 
 public extension View {
-    func easyFullScreenCover<Content>(isPresented: Binding<Bool>, transition: AnyTransition? = .opacity, @ViewBuilder content: @escaping () -> Content) -> some View where Content : View {
+    func easyFullScreenCover<Content>(
+        isPresented: Binding<Bool>,
+        transition: AnyTransition = .opacity,
+        animation: Animation = .default,
+        @ViewBuilder content: @escaping () -> Content
+    ) -> some View where Content : View {
         self
             .overlayIf(isPresented.wrappedValue) {
                 DismissableView(
                     transition: transition,
+                    animation: animation,
                     itemToReturn: isPresented.wrappedValue,
                     completion: nil,
                     content: { _ in
@@ -173,11 +206,17 @@ public extension View {
             }
     }
     
-    func easyFullScreenCover<Content, T>(item: Binding<T?>, transition: AnyTransition? = .opacity, @ViewBuilder content: @escaping (T) -> Content) -> some View where Content : View {
+    func easyFullScreenCover<Content, T>(
+        item: Binding<T?>,
+        transition: AnyTransition = .opacity,
+        animation: Animation = .default,
+        @ViewBuilder content: @escaping (T) -> Content
+    ) -> some View where Content : View {
         self
             .overlayIf(item.wrappedValue) { unwrapped in
                 DismissableView(
                     transition: transition,
+                    animation: animation,
                     itemToReturn: unwrapped,
                     completion: nil,
                     content: content,
@@ -188,7 +227,10 @@ public extension View {
     }
     
     @ViewBuilder
-    func easyFullScreenCover<Content, T>(stack: Binding<[CoordinatedItem<T>?]>, @ViewBuilder content: @escaping (T) -> Content) -> some View where Content: View {
+    func easyFullScreenCover<Content, T>(
+        stack: Binding<[CoordinatedItem<T>?]>,
+        @ViewBuilder content: @escaping (T) -> Content
+    ) -> some View where Content: View {
         self
             .overlay (
                 ZStack { // Need to transition work correct
@@ -196,6 +238,7 @@ public extension View {
                         if let unwrappedItem = stack[index].wrappedValue {
                             DismissableView(
                                 transition: unwrappedItem.transition,
+                                animation: unwrappedItem.animation,
                                 itemToReturn: unwrappedItem.state,
                                 completion: unwrappedItem.completion,
                                 content: content,
@@ -228,12 +271,46 @@ fileprivate extension DispatchQueue {
         }
     }
 }
-//
-//fileprivate extension Collection {
-//    /// Returns the element at the specified index if it is within bounds, otherwise nil.
-//    subscript (safe index: Int) -> Element? {
-//        guard (self.count) > index, index >= 0 else { return nil }
-//        let answerIndex = self.index(self.startIndex, offsetBy: index)
-//        return self[answerIndex]
-//    }
-//}
+
+fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: Coordinated>: ViewModifier {
+    @Environment(\.easyNamespace) private var easyNamespace
+    @ObservedObject var coordinator: Coordinator
+    @ViewBuilder let easyContent: (Coordinator.FullState) -> EasyContent
+    
+    func body(content: Content) -> some View {
+        content
+            .overlay (
+                ZStack { // Need to transition work correct
+                    ForEach(coordinator.navigationStack.indices, id: \.self) { index in
+                        if let unwrappedItem = coordinator.navigationStack[index] {
+                            DismissableView(
+                                transition: unwrappedItem.transition,
+                                animation: unwrappedItem.animation,
+                                itemToReturn: unwrappedItem.state,
+                                completion: unwrappedItem.completion,
+                                content: easyContent,
+                                closeAction: {
+                                    coordinator.navigationStack[index] = nil
+                                }
+                            )
+                            .equatable()
+                            .environment(\.easyNamespace, .init(prefix: unwrappedItem.id,
+                                                                parentPrefix: unwrappedItem.parentId,
+                                                                namespace: easyNamespace.namespace))
+                        }
+                    }
+                }
+            )
+            .environment(\.easyNamespace, .init(prefix: coordinator.viewIdIfStackIsEmpty, parentPrefix: UUID().uuidString, namespace: easyNamespace.namespace))
+    }
+}
+
+public extension View {
+    @ViewBuilder
+    func easyFullScreenCover<EasyContent: View, Coordinator: Coordinated>(
+        coordinator: Coordinator,
+        @ViewBuilder content: @escaping (Coordinator.FullState) -> EasyContent
+    ) -> some View {
+        modifier(EasyFullScreenCoverModifier(coordinator: coordinator, easyContent: content))
+    }
+}
