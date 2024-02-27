@@ -302,7 +302,7 @@ fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: C
                     }
                 }
             )
-            .environment(\.easyNamespace, .init(prefix: coordinator.viewIdIfStackIsEmpty, parentPrefix: UUID().uuidString, namespace: easyNamespace.namespace))
+            .environment(\.easyNamespace, .init(prefix: coordinator.viewIdIfStackIsEmpty, parentPrefix: UUID().uuidString, namespace: namespace))
     }
 }
 
