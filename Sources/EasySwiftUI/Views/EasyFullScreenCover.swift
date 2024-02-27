@@ -97,6 +97,7 @@ public extension Coordinated {
             animation: animation,
             completion: completion
         )
+        
         self.navigationStack.append(item)
     }
     
@@ -105,14 +106,14 @@ public extension Coordinated {
             self.navigationStack[lastIndex] = nil
         }
     }
-    
-    @MainActor func close(by id: FullState.ID) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            
-            self.navigationStack = self.navigationStack.filter({ $0?.state.id != id })
-        }
-    }
+//    
+//   func close(by id: FullState.ID) {
+//        Task { @MainActor [weak self] in
+//            guard let self else { return }
+
+//            self.navigationStack = self.navigationStack.las self.navigationStack.filter({ $0?.state.id != id })
+//        }
+//    }
 }
 
 public struct EasyDismiss {
@@ -226,30 +227,30 @@ public extension View {
             }
     }
     
-    @ViewBuilder
-    func easyFullScreenCover<Content, T>(
-        stack: Binding<[CoordinatedItem<T>?]>,
-        @ViewBuilder content: @escaping (T) -> Content
-    ) -> some View where Content: View {
-        self
-            .overlay (
-                ZStack { // Need to transition work correct
-                    ForEach(stack.wrappedValue.indices, id: \.self) { index in
-                        if let unwrappedItem = stack[index].wrappedValue {
-                            DismissableView(
-                                transition: unwrappedItem.transition,
-                                animation: unwrappedItem.animation,
-                                itemToReturn: unwrappedItem.state,
-                                completion: unwrappedItem.completion,
-                                content: content,
-                                closeAction: {
-                                    stack[safe: index]?.wrappedValue = nil
-                                })
-                        }
-                    }
-                }
-            )
-    }
+//    @ViewBuilder
+//    func easyFullScreenCover<Content, T>(
+//        stack: Binding<[CoordinatedItem<T>?]>,
+//        @ViewBuilder content: @escaping (T) -> Content
+//    ) -> some View where Content: View {
+//        self
+//            .overlay (
+//                ZStack { // Need to transition work correct
+//                    ForEach(stack.wrappedValue.indices, id: \.self) { index in
+//                        if let unwrappedItem = stack[index].wrappedValue {
+//                            DismissableView(
+//                                transition: unwrappedItem.transition,
+//                                animation: unwrappedItem.animation,
+//                                itemToReturn: unwrappedItem.state,
+//                                completion: unwrappedItem.completion,
+//                                content: content,
+//                                closeAction: {
+//                                    stack[safe: index]?.wrappedValue = nil
+//                                })
+//                        }
+//                    }
+//                }
+//            )
+//    }
 }
 
 fileprivate func hideKeyboard() {
@@ -273,7 +274,7 @@ fileprivate extension DispatchQueue {
 }
 
 fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: Coordinated>: ViewModifier {
-    @Environment(\.easyNamespace) private var easyNamespace
+    @Namespace private var namespace
     @ObservedObject var coordinator: Coordinator
     @ViewBuilder let easyContent: (Coordinator.FullState) -> EasyContent
     
@@ -296,7 +297,7 @@ fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: C
                             .equatable()
                             .environment(\.easyNamespace, .init(prefix: unwrappedItem.id,
                                                                 parentPrefix: unwrappedItem.parentId,
-                                                                namespace: easyNamespace.namespace))
+                                                                namespace: namespace))
                         }
                     }
                 }
