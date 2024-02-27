@@ -116,18 +116,18 @@ public extension Coordinated {
 }
 
 public struct EasyDismiss {
-    private var dismissAction: (Bool) -> Void
-    public func callAsFunction(isWithAnimation: Bool = true) {
-        dismissAction(isWithAnimation)
+    private var dismissAction: () -> Void
+    public func callAsFunction() {
+        dismissAction()
     }
     
-    public init(action: @escaping (Bool) -> Void = { _ in }) {
+    public init(action: @escaping () -> Void = { }) {
         self.dismissAction = action
     }
     
     public var action: @MainActor () -> Void {
         {
-            dismissAction(true)
+            dismissAction()
         }
     }
 }
@@ -164,7 +164,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
             if isShow {
                 content(itemToReturn)
                     .transition(transition)
-                    .environment(\.easyDismiss, EasyDismiss { isWithAnimation in
+                    .environment(\.easyDismiss, EasyDismiss {
                         isShow = false
                         completion?()
                     })

@@ -49,7 +49,7 @@ public struct Popover<Content: View>: View, KeyboardHelper {
                             isPresented ? $0[.bottom] : $0[.top] - geo.safeAreaInsets.bottom
                         }
                         .animation(.smooth(duration: 0.35), value: isPresented)
-                        .environment(\.easyDismiss, EasyDismiss {_ in
+                        .environment(\.easyDismiss, EasyDismiss {
                             isPresented = false
                         })
                 }
