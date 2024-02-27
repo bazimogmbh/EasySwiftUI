@@ -48,8 +48,6 @@ public protocol Coordinated: ObservableObject {
     func showFull(_ state: FullState, completion: OptionalVoid)
     func showFull(_ state: FullState, transition: AnyTransition, animation: Animation, timeout: TimeInterval, completion: OptionalVoid)
     func closeTopScreen()
-    
-    func close(by id: FullState.ID)
 }
 
 public extension Coordinated {
@@ -106,14 +104,6 @@ public extension Coordinated {
             self.navigationStack[lastIndex] = nil
         }
     }
-//    
-//   func close(by id: FullState.ID) {
-//        Task { @MainActor [weak self] in
-//            guard let self else { return }
-
-//            self.navigationStack = self.navigationStack.las self.navigationStack.filter({ $0?.state.id != id })
-//        }
-//    }
 }
 
 public struct EasyDismiss {
