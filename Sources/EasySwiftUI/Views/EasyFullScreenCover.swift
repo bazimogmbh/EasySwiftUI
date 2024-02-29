@@ -48,6 +48,8 @@ public protocol Coordinated: ObservableObject {
     func showFull(_ state: FullState, completion: OptionalVoid)
     func showFull(_ state: FullState, transition: AnyTransition, animation: Animation, timeout: TimeInterval, completion: OptionalVoid)
     func closeTopScreen()
+    
+    func closeAll(by id: FullState.ID)
 }
 
 public extension Coordinated {
@@ -103,6 +105,10 @@ public extension Coordinated {
         if let lastIndex = self.navigationStack.lastIndex(where: { $0 != nil }) {
             self.navigationStack[lastIndex] = nil
         }
+    }
+    
+    func closeAll(by id: FullState.ID) {
+        self.navigationStack = self.navigationStack.filter({ $0?.state.id != id })
     }
 }
 
