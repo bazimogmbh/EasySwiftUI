@@ -113,12 +113,14 @@ public extension Coordinated {
 }
 
 public struct EasyDismiss {
-    private var dismissAction: () -> Void
+    private var dismissAction: @MainActor () -> Void
     public func callAsFunction() {
-        dismissAction()
+        Task { @MainActor in
+            dismissAction()
+        }
     }
     
-    public init(action: @escaping () -> Void = { }) {
+    public init(action: @MainActor @escaping () -> Void = { }) {
         self.dismissAction = action
     }
     
