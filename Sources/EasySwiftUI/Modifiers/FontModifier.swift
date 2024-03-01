@@ -80,7 +80,7 @@ public extension View {
 // MARK: - New logic
 
 public struct AppFont: Hashable {
-    let name: String
+    public let name: String
     
     public init(_ name: String) {
         self.name = name
