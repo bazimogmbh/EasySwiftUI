@@ -77,7 +77,7 @@ public extension Coordinated {
         if let last = self.navigationStack.last, last?.state.id == state.id { return }
         
         self.navigationStack = self.navigationStack.map { element in
-            if element?.groupId == state.groupId  {
+            if let groupId = element?.groupId, groupId == state.groupId  {
                return nil
             }
             
