@@ -14,6 +14,7 @@ public struct CoordinatedItem<T> {
     
     var id: String
     var parentId: String
+    var groupId: String?
     
     var transition: AnyTransition = .opacity
     var animation: Animation = .linear
@@ -75,6 +76,14 @@ public extension Coordinated {
         
         if let last = self.navigationStack.last, last?.state.id == state.id { return }
         
+        self.navigationStack = self.navigationStack.map { element in
+            if element?.groupId == state.groupId  {
+               return nil
+            }
+            
+            return element
+        }
+
         if self.navigationStack.compactMap({ $0 }).isEmpty {
             self.navigationStack = []
         }
@@ -93,6 +102,7 @@ public extension Coordinated {
             state: state,
             id: id,
             parentId: parentId,
+            groupId: state.groupId,
             transition: transition,
             animation: animation,
             completion: completion
