@@ -16,14 +16,14 @@ public struct CoordinatedItem<T> {
     var parentId: String
     var groupId: String?
     
-    var transition: AnyTransition = .opacity
+    var transition: AnyTransition? = .opacity
     var animation: Animation = .linear
     
     var completion: OptionalVoid = nil
 }
 
 public protocol NavigationalItem: Identifiable {
-    var defaultTransition: AnyTransition { get }
+    var defaultTransition: AnyTransition? { get }
     var groupId: String? { get }
 }
 
@@ -47,7 +47,7 @@ public protocol Coordinated: ObservableObject {
     var navigationStack: [CoordinatedItem<FullState>?] { get set }
     
     func showFull(_ state: FullState, completion: OptionalVoid)
-    func showFull(_ state: FullState, transition: AnyTransition, animation: Animation, timeout: TimeInterval, completion: OptionalVoid)
+    func showFull(_ state: FullState, transition: AnyTransition?, animation: Animation, timeout: TimeInterval, completion: OptionalVoid)
     func closeTopScreen()
     
     func closeAll(by id: FullState.ID)
@@ -65,7 +65,7 @@ public extension Coordinated {
     
     func showFull(
         _ state: FullState,
-        transition: AnyTransition,
+        transition: AnyTransition?,
         animation: Animation = .linear,
         timeout: TimeInterval = 0,
         completion: OptionalVoid = nil
@@ -83,7 +83,7 @@ public extension Coordinated {
             
             return element
         }
-
+        
         if self.navigationStack.compactMap({ $0 }).isEmpty {
             self.navigationStack = []
         }
@@ -123,14 +123,12 @@ public extension Coordinated {
 }
 
 public struct EasyDismiss {
-    private var dismissAction: @MainActor () -> Void
+    private var dismissAction: () -> Void
     public func callAsFunction() {
-        Task { @MainActor in
-            dismissAction()
-        }
+        dismissAction()
     }
     
-    public init(action: @MainActor @escaping () -> Void = { }) {
+    public init(action: @escaping () -> Void = { }) {
         self.dismissAction = action
     }
     
@@ -159,7 +157,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
     
     @State private var isShow = false
     
-    let transition: AnyTransition
+    let transition: AnyTransition?
     let animation: Animation
     let itemToReturn: T
 
@@ -169,25 +167,35 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
     let closeAction: () -> ()
     
     var body: some View {
-        ZStack {
-            if isShow {
-                content(itemToReturn)
-                    .transition(transition)
-                    .environment(\.easyDismiss, EasyDismiss {
-                        isShow = false
-                        completion?()
-                    })
-                    .onDisappear {
-                        if !isShow {
-                            closeAction()
+        if let transition {
+            ZStack {
+                if isShow {
+                    content(itemToReturn)
+                        .transition(transition)
+                        .environment(\.easyDismiss, EasyDismiss {
+                            isShow = false
+                            completion?()
+                        })
+                        .onDisappear {
+                            if !isShow {
+                                closeAction()
+                            }
                         }
-                    }
+                }
             }
-        }
-        .animation(animation, value: isShow)
-        .onAppear {
-            hideKeyboard()
-            isShow = true
+            .animation(animation, value: isShow)
+            .onAppear {
+                hideKeyboard()
+                isShow = true
+            }
+        } else {
+            content(itemToReturn)
+                .environment(\.easyDismiss, EasyDismiss {
+                        closeAction()
+                })
+                .onAppear {
+                    hideKeyboard()
+                }
         }
     }
 }
@@ -195,7 +203,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
 public extension View {
     func easyFullScreenCover<Content>(
         isPresented: Binding<Bool>,
-        transition: AnyTransition = .opacity,
+        transition: AnyTransition? = .opacity,
         animation: Animation = .default,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View where Content : View {
@@ -217,7 +225,7 @@ public extension View {
     
     func easyFullScreenCover<Content, T>(
         item: Binding<T?>,
-        transition: AnyTransition = .opacity,
+        transition: AnyTransition? = .opacity,
         animation: Animation = .default,
         @ViewBuilder content: @escaping (T) -> Content
     ) -> some View where Content : View {
@@ -305,12 +313,29 @@ fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: C
                             .equatable()
                             .environment(\.easyNamespace, .init(prefix: unwrappedItem.id,
                                                                 parentPrefix: unwrappedItem.parentId,
+                                                                topScreenPrefix: topScreenPrefix(of: coordinator),
                                                                 namespace: namespace))
                         }
                     }
                 }
             )
-            .environment(\.easyNamespace, .init(prefix: coordinator.viewIdIfStackIsEmpty, parentPrefix: UUID().uuidString, namespace: namespace))
+            .environment(\.easyNamespace, .init(
+                prefix: coordinator.viewIdIfStackIsEmpty,
+                parentPrefix: UUID().uuidString,
+                topScreenPrefix: topScreenPrefix(of: coordinator),
+                namespace: namespace
+            )
+            )
+    }
+    
+    private func topScreenPrefix(of coordinator: Coordinator) -> String {
+        if coordinator.navigationStack.compactMap({$0}).isEmpty {
+            return coordinator.viewIdIfStackIsEmpty
+        } else if let index = coordinator.navigationStack.lastIndex(where: { $0 != nil }) {
+            return String(index)
+        } else {
+            return UUID().uuidString
+        }
     }
 }
 
