@@ -300,6 +300,9 @@ fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: C
                 ZStack { // Need to transition work correct
                     ForEach(coordinator.navigationStack.indices, id: \.self) { index in
                         if let unwrappedItem = coordinator.navigationStack[index] {
+                            let startIndex = coordinator.navigationStack.startIndex
+                            let zIndex = Double(coordinator.navigationStack.distance(from: startIndex, to: index))
+                            
                             DismissableView(
                                 transition: unwrappedItem.transition,
                                 animation: unwrappedItem.animation,
@@ -308,9 +311,14 @@ fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: C
                                 content: easyContent,
                                 closeAction: {
                                     coordinator.navigationStack[index] = nil
+                                    
+                                    if coordinator.navigationStack.endIndex - 1 == index {
+                                        coordinator.navigationStack.removeLast()
+                                    }
                                 }
                             )
                             .equatable()
+                            .zIndex(zIndex)
                             .environment(\.easyNamespace, .init(prefix: unwrappedItem.id,
                                                                 parentPrefix: unwrappedItem.parentId,
                                                                 topScreenPrefix: topScreenPrefix(of: coordinator),
