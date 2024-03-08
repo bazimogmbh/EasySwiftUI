@@ -8,7 +8,7 @@
 import SwiftUI
 
 public extension Color {
-    static let transparent = Color.white.opacity(0.001)
+    static let transparent = Color.white.opacity(0.00001)
     
     static func hex(_ hex: String) -> Color {
         .init(hex: hex)
