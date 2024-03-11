@@ -23,12 +23,15 @@ public final class RechabilityService: ObservableObject {
         enableMonitoring()
     }
     
+    deinit {
+        monitor.cancel()
+    }
+    
     private func enableMonitoring() {
-        monitor.start(queue: monitorQueue)
-        
         monitor.pathUpdateHandler = { [weak self] path in
             self?.handleNetworkUpdate(path)
         }
+        monitor.start(queue: monitorQueue)
     }
     
     private func handleNetworkUpdate(_ path: NWPath) {
