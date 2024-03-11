@@ -34,7 +34,7 @@ public extension NavigationalItem {
     
     var id: String {
         let mirror = Mirror(reflecting: self)
-        return mirror.children.first?.label ?? ""
+        return mirror.children.first?.label ?? String(describing: self)
     }
 }
 
