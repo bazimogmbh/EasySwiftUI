@@ -10,15 +10,13 @@ import Network
 import SystemConfiguration
 
 public final class RechabilityService: ObservableObject {
-    public static let shared = RechabilityService()
-    
     @Published public private(set) var isNetworkConnected: Bool = false
     @Published public private(set) var isCellularConnection: Bool = false
     
     private let monitor: NWPathMonitor
     private let monitorQueue = DispatchQueue(label: "monitorInternet")
     
-    private init() {
+    init() {
         monitor = NWPathMonitor()
         isNetworkConnected = Self.isConnectedToNetwork
         enableMonitoring()
