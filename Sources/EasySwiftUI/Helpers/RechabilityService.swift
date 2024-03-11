@@ -12,6 +12,7 @@ import SystemConfiguration
 public final class RechabilityService: ObservableObject {
     @Published public private(set) var isNetworkConnected: Bool = false
     @Published public private(set) var isCellularConnection: Bool = false
+    @Published public private(set) var isConnectedByWifi: Bool = false
     
     private let monitor: NWPathMonitor
     private let monitorQueue = DispatchQueue(label: "monitorInternet")
@@ -34,6 +35,7 @@ public final class RechabilityService: ObservableObject {
         DispatchQueue.main.async {
             self.isNetworkConnected = path.status == .satisfied
             self.isCellularConnection = path.usesInterfaceType(.cellular)
+            self.isConnectedByWifi = self.isNetworkConnected && !self.isCellularConnection
         }
     }
     
