@@ -16,7 +16,7 @@ public final class RechabilityService: ObservableObject {
     private let monitor: NWPathMonitor
     private let monitorQueue = DispatchQueue(label: "monitorInternet")
     
-    init() {
+    public init() {
         monitor = NWPathMonitor()
         isNetworkConnected = Self.isConnectedToNetwork
         enableMonitoring()
