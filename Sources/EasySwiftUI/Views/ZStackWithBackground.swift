@@ -7,16 +7,6 @@
 
 import SwiftUI
 
-public enum BackgroundState {
-#if os(macOS)
-    case material(NSVisualEffectView.Material)
-#else
-    case material(UIBlurEffect.Style)
-#endif
-    
-    case color(Color)
-}
-
 public struct ZStackWithBackground<Content: View>: View {
     var state: BackgroundState = .color(EasySwiftUI.appBackground)
     var alignment: Alignment = .center
@@ -35,14 +25,7 @@ public struct ZStackWithBackground<Content: View>: View {
     
     public var body: some View {
         ZStack(alignment: alignment) {
-            switch state {
-            case .material(let material):
-                BlurView(style: material)
-                     .ignoresSafeArea()
-            case .color(let color):
-                color
-                    .ignoresSafeArea()
-            }
+            BackgroundView(state: state)
             
             content()
         }

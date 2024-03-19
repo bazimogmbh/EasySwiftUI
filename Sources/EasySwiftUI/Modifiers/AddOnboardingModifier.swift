@@ -5,6 +5,8 @@
 //  Created by Yevhenii Korsun on 26.12.2023.
 //
 
+#if !os(macOS)
+
 import SwiftUI
 
 public protocol OnboardingStepProtocol: RawRepresentable<Int>, CaseIterable, Equatable {
@@ -113,3 +115,4 @@ public extension View {
     }
 }
 
+#endif
