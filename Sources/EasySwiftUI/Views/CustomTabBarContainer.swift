@@ -43,7 +43,10 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                 ZStackWithBackground {
                     content(tabItem)
                         .tag(tabItem)
-                        .padding(.bottom, bottomPadding)
+                        .safeAreaInset(edge: .bottom) {
+                            Color.clear
+                                .frame(height: bottomPadding)
+                        }
                 }
             }
         }
