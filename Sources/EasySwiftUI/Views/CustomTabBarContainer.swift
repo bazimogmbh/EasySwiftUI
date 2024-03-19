@@ -12,9 +12,11 @@ import SwiftUI
 public protocol TabItemProtocol: Hashable, CaseIterable { }
 
 public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem: TabItemProtocol>: View, KeyboardHelper {
+    @StateObject private var observer = TabBarScrollObserver()
+    
     @Binding var selected: TabBarItem
     @ViewBuilder var content: (TabBarItem) -> Content
-    @ViewBuilder var barContent: ([TabBarItem]) -> BarContent
+    @ViewBuilder var barContent: ([TabBarItem], Bool) -> BarContent
     
     private let tabBarHeight: CGFloat
     private let bottomPadding: CGFloat
@@ -24,7 +26,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         bottomPadding: CGFloat = EasySwiftUI.tabBarHeight,
         selected: Binding<TabBarItem>,
         content: @escaping (TabBarItem) -> Content,
-        barContent: @escaping ([TabBarItem]) -> BarContent
+        barContent: @escaping ([TabBarItem], Bool) -> BarContent
     ) {
         self._selected = selected
         self.content = content
@@ -43,6 +45,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                 ZStackWithBackground {
                     content(tabItem)
                         .tag(tabItem)
+                        .environmentObject(observer)
                         .safeAreaInset(edge: .bottom) {
                             Color.clear
                                 .frame(height: bottomPadding)
@@ -54,8 +57,11 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
             ZStack(alignment: .bottom) {
                 Color.clear
                 
-                barContent(allTabs)
-                    .frame(height: tabBarHeight)
+                GeometryReader { proxy in
+                    barContent(allTabs, observer.isScrollingBottom(in: proxy))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .frame(height: tabBarHeight)
             }
             .ignoresSafeArea(.keyboard)
         }

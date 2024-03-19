@@ -8,32 +8,36 @@
 import SwiftUI
 
 public struct CustomNavigationView<BarContent: View, Content: View>: View {
+    @StateObject private var observer = NavigationBarScrollObserver()
+    
     let background: BackgroundState
     let alignment: Alignment
     var barHeight: CGFloat
-    let barContent: BarContent
-    let content: Content
+    @ViewBuilder let barContent: (Bool, CGFloat) -> BarContent
+    @ViewBuilder let content: () -> Content
     
     public init(
         background: BackgroundState = .color(EasySwiftUI.appBackground),
         alignment: Alignment = .center,
         barHeight: CGFloat = EasySwiftUI.navigationBarHeight,
-        @ViewBuilder barContent: () -> BarContent,
-        @ViewBuilder content: () -> Content
+        @ViewBuilder barContent: @escaping (Bool, CGFloat) -> BarContent,
+        @ViewBuilder content: @escaping () -> Content
     ) {
         self.background = background
         self.alignment = alignment
         self.barHeight = barHeight
-        self.barContent = barContent()
-        self.content = content()
+        self.barContent = barContent
+        self.content = content
     }
     
     public var body: some View {
         ZStackWithBackground(background) {
-            content
+            content()
+                .coordinateSpace(name: observer.coordinateSpace)
+                .environmentObject(observer)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
                 .safeAreaInset(edge: .top) {
-                    barContent
+                    barContent(observer.isScrollingTop, observer.minYOffset)
                         .frame(height: barHeight)
                         .frame(maxWidth: .infinity)
                 }
@@ -47,9 +51,9 @@ public extension CustomNavigationView where BarContent == BackgroundView {
         background: BackgroundState = .color(EasySwiftUI.appBackground),
         alignment: Alignment = .center,
         barHeight: CGFloat = EasySwiftUI.navigationBarHeight,
-        @ViewBuilder content: () -> Content
+        @ViewBuilder content: @escaping () -> Content
     ) {
-        self.init(background: background, alignment: alignment, barHeight: barHeight, barContent: {  BackgroundView(state: navBar) }, content: content)
+        self.init(background: background, alignment: alignment, barHeight: barHeight, barContent: { _,_ in BackgroundView(state: navBar) }, content: content)
     }
 }
 
