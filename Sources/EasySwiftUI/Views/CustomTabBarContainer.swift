@@ -45,7 +45,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                 ZStackWithBackground {
                     content(tabItem)
                         .tag(tabItem)
-                        .environmentObject(observerContainer.observer)
+                        .environmentObject(observerContainer)
                         .safeAreaInset(edge: .bottom) {
                             Color.clear
                                 .frame(height: bottomPadding)
