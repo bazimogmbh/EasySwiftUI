@@ -29,6 +29,17 @@ public struct ZStackWithBackground<Content: View>: View {
             
             content()
         }
+        .overlay(alignment: .topLeading) {
+#if DEBUG
+            Circle()
+                .fill(Color.random)
+                .frame(width: 20, height: 20)
+                .padding()
+                .allowsHitTesting(false)
+#else
+         EmptyView()
+#endif
+        }
     }
 }
 
