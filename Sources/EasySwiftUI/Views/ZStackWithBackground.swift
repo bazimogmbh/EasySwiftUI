@@ -34,7 +34,6 @@ public struct ZStackWithBackground<Content: View>: View {
             Circle()
                 .fill(Color.random)
                 .frame(width: 20, height: 20)
-                .padding()
                 .allowsHitTesting(false)
 #else
          EmptyView()
