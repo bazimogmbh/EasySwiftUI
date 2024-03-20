@@ -31,7 +31,7 @@ final class NavigationBarScrollObserver: ObservableObject {
     var minYOffset: CGFloat {
         let value = rect.minY
         var offsetY: CGFloat = 0
-
+        
         if !isScrollingTop {
             offsetY = value
         } else {
@@ -52,7 +52,7 @@ final class TabBarScrollObserver: ObservableObject {
     @Published private(set) var rect: CGRect = .zero
     
     func isScrollingBottom(in proxy: GeometryProxy) -> Bool {
-         rect.maxY > proxy.frame(in: .global).minY
+        rect.maxY > proxy.frame(in: .global).minY
     }
     
     func set(_ rect: CGRect) {
@@ -83,38 +83,33 @@ public struct ObservableScrollView<Content: View>: View {
         self.observers = observers
         self.content = content
     }
-
+    
     public var body: some View {
         ScrollView(.vertical, showsIndicators: showsIndicators) {
             content()
                 .background(alignment: .top) {
-                    if isShow {
+                    if isShow && observers.contains(.navBar) {
                         GeometryReader { proxy in
                             Color.clear
-                                .apply {
-                                    if observers.contains(.navBar) {
-                                        $0
-                                            .preference(key: NavScrollPreferenceKey.self, value: proxy.frame(in: .named(navObserver.coordinateSpace)))
-                                            .onPreferenceChange(NavScrollPreferenceKey.self) { rect in
-                                                navObserver.set(rect)
-                                            }
-                                    } else {
-                                        $0
-                                    }
-                                }
-                                .apply {
-                                    if observers.contains(.tabBar) {
-                                        $0
-                                            .preference(key: TabScrollPreferenceKey.self, value: proxy.frame(in: .global))
-                                            .onPreferenceChange(TabScrollPreferenceKey.self) { rect in
-                                                tabObserver.set(rect)
-                                            }
-                                    } else {
-                                        $0
-                                    }
+                                .preference(key: NavScrollPreferenceKey.self, value: proxy.frame(in: .named(navObserver.coordinateSpace)))
+                                .onPreferenceChange(NavScrollPreferenceKey.self) { rect in
+                                    navObserver.set(rect)
                                 }
                         }
-                       
+                        .frame(height: 0)
+                    }
+                }
+            
+                .background(alignment: .bottom) {
+                    if isShow && observers.contains(.tabBar) {
+                        GeometryReader { proxy in
+                            Color.clear
+                                .preference(key: TabScrollPreferenceKey.self, value: proxy.frame(in: .global))
+                                .onPreferenceChange(TabScrollPreferenceKey.self) { rect in
+                                    tabObserver.set(rect)
+                                }
+                        }
+                        .frame(height: 0)
                     }
                 }
         }
@@ -126,7 +121,6 @@ public struct ObservableScrollView<Content: View>: View {
         }
     }
 }
-
 
 #Preview {
     ObservableScrollView {
