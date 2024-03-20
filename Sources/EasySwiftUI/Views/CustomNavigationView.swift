@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct CustomNavigationView<BarContent: View, Content: View>: View {
-    @StateObject private var observer = NavigationBarScrollObserver()
+    @StateObject private var observerContainer = NavBarScrollObserverContainer()
     
     let background: BackgroundState
     let alignment: Alignment
@@ -32,16 +32,25 @@ public struct CustomNavigationView<BarContent: View, Content: View>: View {
     
     public var body: some View {
         ZStackWithBackground(background) {
-            EquatableView(content: content)
-                .coordinateSpace(name: observer.coordinateSpace)
-                .environmentObject(observer)
+            content()
+                .coordinateSpace(name: observerContainer.observer.coordinateSpace)
+                .environmentObject(observerContainer)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
                 .safeAreaInset(edge: .top) {
-                    barContent(observer.isScrollingTop, observer.minYOffset)
+                    NavBarContent(observer: observerContainer.observer, barContent: barContent)
                         .frame(height: barHeight)
                         .frame(maxWidth: .infinity)
                 }
         }
+    }
+}
+
+fileprivate struct NavBarContent<Content: View>: View {
+    @ObservedObject var observer: NavigationBarScrollObserver
+    @ViewBuilder var barContent: (Bool, CGFloat) -> Content
+    
+    var body: some View {
+        barContent(observer.isScrollingTop, observer.minYOffset)
     }
 }
 

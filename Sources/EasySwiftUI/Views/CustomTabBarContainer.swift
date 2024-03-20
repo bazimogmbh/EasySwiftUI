@@ -12,7 +12,7 @@ import SwiftUI
 public protocol TabItemProtocol: Hashable, CaseIterable { }
 
 public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem: TabItemProtocol>: View, KeyboardHelper {
-    @StateObject private var observer = TabBarScrollObserver()
+    @StateObject private var observerContainer = TabBarScrollObserverContainer()
     
     @Binding var selected: TabBarItem
     @ViewBuilder var content: (TabBarItem) -> Content
@@ -43,15 +43,13 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         TabView(selection: $selected) {
             ForEach(allTabs, id:\.self) { tabItem in
                 ZStackWithBackground {
-                    EquatableView {
-                        content(tabItem)
-                    }
-                    .tag(tabItem)
-                    .environmentObject(observer)
-                    .safeAreaInset(edge: .bottom) {
-                        Color.clear
-                            .frame(height: bottomPadding)
-                    }
+                    content(tabItem)
+                        .tag(tabItem)
+                        .environmentObject(observerContainer.observer)
+                        .safeAreaInset(edge: .bottom) {
+                            Color.clear
+                                .frame(height: bottomPadding)
+                        }
                 }
             }
         }
@@ -60,7 +58,12 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                 Color.clear
                 
                 GeometryReader { proxy in
-                    barContent(allTabs, observer.isScrollingBottom(in: proxy))
+                    TabBarContent(
+                        observer: observerContainer.observer,
+                        allTabs: allTabs,
+                        proxy: proxy,
+                        barContent: barContent
+                    )
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .frame(height: tabBarHeight)
@@ -70,6 +73,17 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         .onAppear {
             UITabBar.appearance().isHidden = true
         }
+    }
+}
+
+fileprivate struct TabBarContent<BarContent: View, TabBarItem: TabItemProtocol>: View {
+    @ObservedObject var observer: TabBarScrollObserver
+    let allTabs: [TabBarItem]
+    let proxy: GeometryProxy
+    @ViewBuilder var barContent: ([TabBarItem], Bool) -> BarContent
+    
+    var body: some View {
+        barContent(allTabs, observer.isScrollingBottom(in: proxy))
     }
 }
 

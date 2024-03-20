@@ -22,6 +22,16 @@ fileprivate struct TabScrollPreferenceKey: PreferenceKey {
 }
 
 @MainActor
+final class TabBarScrollObserverContainer: ObservableObject {
+    var observer: TabBarScrollObserver = TabBarScrollObserver()
+}
+
+@MainActor
+final class NavBarScrollObserverContainer: ObservableObject {
+    var observer: NavigationBarScrollObserver = NavigationBarScrollObserver()
+}
+
+@MainActor
 final class NavigationBarScrollObserver: ObservableObject {
     let coordinateSpace = UUID().uuidString
     
@@ -65,8 +75,8 @@ public struct ObservableScrollView<Content: View>: View {
         case navBar, tabBar
     }
     
-    @EnvironmentObject private var navObserver: NavigationBarScrollObserver
-    @EnvironmentObject private var tabObserver: TabBarScrollObserver
+    @EnvironmentObject private var navObserver: NavBarScrollObserverContainer
+    @EnvironmentObject private var tabObserver: TabBarScrollObserverContainer
     @State private var isShow = false
     
     var showsIndicators = true
@@ -91,9 +101,9 @@ public struct ObservableScrollView<Content: View>: View {
                     if isShow && observers.contains(.navBar) {
                         GeometryReader { proxy in
                             Color.clear
-                                .preference(key: NavScrollPreferenceKey.self, value: proxy.frame(in: .named(navObserver.coordinateSpace)))
+                                .preference(key: NavScrollPreferenceKey.self, value: proxy.frame(in: .named(navObserver.observer.coordinateSpace)))
                                 .onPreferenceChange(NavScrollPreferenceKey.self) { rect in
-                                    navObserver.set(rect)
+                                    navObserver.observer.set(rect)
                                 }
                         }
                         .frame(height: 0)
@@ -105,7 +115,7 @@ public struct ObservableScrollView<Content: View>: View {
                             Color.clear
                                 .preference(key: TabScrollPreferenceKey.self, value: proxy.frame(in: .global))
                                 .onPreferenceChange(TabScrollPreferenceKey.self) { rect in
-                                    tabObserver.set(rect)
+                                    tabObserver.observer.set(rect)
                                 }
                         }
                         .frame(height: 0)
