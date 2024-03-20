@@ -76,7 +76,7 @@ public struct ObservableScrollView<Content: View>: View {
     
     public init(
         showsIndicators: Bool = true,
-        observers: Set<ScrollObserver> = [.navBar, .tabBar],
+        observers: Set<ScrollObserver> = [.navBar],
         content: @escaping () -> Content
     ) {
         self.showsIndicators = showsIndicators
@@ -99,7 +99,6 @@ public struct ObservableScrollView<Content: View>: View {
                         .frame(height: 0)
                     }
                 }
-            
                 .background(alignment: .bottom) {
                     if isShow && observers.contains(.tabBar) {
                         GeometryReader { proxy in

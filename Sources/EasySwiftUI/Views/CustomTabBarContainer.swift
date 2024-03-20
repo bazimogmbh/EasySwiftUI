@@ -43,13 +43,15 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
         TabView(selection: $selected) {
             ForEach(allTabs, id:\.self) { tabItem in
                 ZStackWithBackground {
-                    content(tabItem)
-                        .tag(tabItem)
-                        .environmentObject(observer)
-                        .safeAreaInset(edge: .bottom) {
-                            Color.clear
-                                .frame(height: bottomPadding)
-                        }
+                    EquatableView {
+                        content(tabItem)
+                    }
+                    .tag(tabItem)
+                    .environmentObject(observer)
+                    .safeAreaInset(edge: .bottom) {
+                        Color.clear
+                            .frame(height: bottomPadding)
+                    }
                 }
             }
         }

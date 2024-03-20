@@ -32,7 +32,7 @@ public struct CustomNavigationView<BarContent: View, Content: View>: View {
     
     public var body: some View {
         ZStackWithBackground(background) {
-            content()
+            EquatableView(content: content)
                 .coordinateSpace(name: observer.coordinateSpace)
                 .environmentObject(observer)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
