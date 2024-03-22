@@ -35,6 +35,7 @@ public struct CustomNavigationView<BarContent: View, Content: View>: View {
             content()
                 .coordinateSpace(name: observerContainer.observer.coordinateSpace)
                 .environmentObject(observerContainer)
+                .environment(\.navBarHasObserver, true)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
                 .safeAreaInset(edge: .top) {
                     NavBarContent(observer: observerContainer.observer, barContent: barContent)

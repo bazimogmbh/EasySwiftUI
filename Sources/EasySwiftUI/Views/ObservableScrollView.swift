@@ -70,10 +70,35 @@ final class TabBarScrollObserver: ObservableObject {
     }
 }
 
+struct NavBarHasObserverKey: EnvironmentKey {
+    public static var defaultValue: Bool = false
+}
+
+extension EnvironmentValues {
+    var navBarHasObserver: Bool {
+        get { self[NavBarHasObserverKey.self] }
+        set { self[NavBarHasObserverKey.self] = newValue }
+    }
+}
+
+struct TabBarHasObserverKey: EnvironmentKey {
+    public static var defaultValue: Bool = false
+}
+
+extension EnvironmentValues {
+    var tabBarHasObserver: Bool {
+        get { self[TabBarHasObserverKey.self] }
+        set { self[TabBarHasObserverKey.self] = newValue }
+    }
+}
+
 public struct ObservableScrollView<Content: View>: View {
     public enum ScrollObserver {
         case navBar, tabBar
     }
+    
+    @Environment(\.navBarHasObserver) private var navBarHasObserver
+    @Environment(\.tabBarHasObserver) private var tabBarHasObserver
     
     @EnvironmentObject private var navObserver: NavBarScrollObserverContainer
     @EnvironmentObject private var tabObserver: TabBarScrollObserverContainer
@@ -98,7 +123,7 @@ public struct ObservableScrollView<Content: View>: View {
         ScrollView(.vertical, showsIndicators: showsIndicators) {
             content()
                 .background(alignment: .top) {
-                    if isShow && observers.contains(.navBar) {
+                    if isShow && observers.contains(.navBar) && navBarHasObserver {
                         GeometryReader { proxy in
                             Color.clear
                                 .preference(key: NavScrollPreferenceKey.self, value: proxy.frame(in: .named(navObserver.observer.coordinateSpace)))
@@ -110,7 +135,7 @@ public struct ObservableScrollView<Content: View>: View {
                     }
                 }
                 .background(alignment: .bottom) {
-                    if isShow && observers.contains(.tabBar) {
+                    if isShow && observers.contains(.tabBar) && tabBarHasObserver {
                         GeometryReader { proxy in
                             Color.clear
                                 .preference(key: TabScrollPreferenceKey.self, value: proxy.frame(in: .global))
