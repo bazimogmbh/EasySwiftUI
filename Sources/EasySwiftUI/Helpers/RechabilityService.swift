@@ -36,9 +36,9 @@ public final class RechabilityService: ObservableObject {
     
     private func handleNetworkUpdate(_ path: NWPath) {
         DispatchQueue.main.async {
-            self.isNetworkConnected = path.status == .satisfied
-            self.isCellularConnection = path.usesInterfaceType(.cellular)
-            self.isConnectedByWifi = self.isNetworkConnected && !self.isCellularConnection
+            self.isNetworkConnected.updateIfNeed(path.status == .satisfied)
+            self.isCellularConnection.updateIfNeed(path.usesInterfaceType(.cellular))
+            self.isConnectedByWifi.updateIfNeed(self.isNetworkConnected && !self.isCellularConnection)
         }
     }
     
@@ -62,5 +62,13 @@ public final class RechabilityService: ObservableObject {
         let needsConnection = flags.contains(.connectionRequired)
         
         return (isReachable && !needsConnection)
+    }
+}
+
+fileprivate extension Bool {
+    mutating func updateIfNeed(_ value: Bool) {
+        if self != value {
+            self = value
+        }
     }
 }
