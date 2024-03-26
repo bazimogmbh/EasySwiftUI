@@ -29,6 +29,8 @@ fileprivate struct DismissModifier<T: Dismissable>: ViewModifier {
         content
             .onChange(of: vm.closeView) { closeView in
                 if closeView {
+                    vm.closeView = false
+                    
                     switch type {
                     case .easyDismiss:
                         easyDismiss()
