@@ -47,7 +47,7 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                         .tag(tabItem)
                         .environmentObject(observerContainer)
                         .environment(\.tabBarHasObserver, true)
-                        .safeAreaInset(edge: .bottom) {
+                        .safeAreaInset(edge: .bottom, spacing: .zero) {
                             Color.clear
                                 .frame(height: bottomPadding)
                         }
