@@ -24,6 +24,7 @@ public struct CoordinatedItem<T> {
 
 public protocol NavigationalItem: Identifiable {
     var defaultTransition: AnyTransition? { get }
+    var defaultAnimation: Animation { get }
     var groupId: String? { get }
 }
 
@@ -47,7 +48,7 @@ public protocol Coordinated: ObservableObject {
     var navigationStack: [CoordinatedItem<FullState>?] { get set }
     
     func showFull(_ state: FullState, completion: OptionalVoid)
-    func showFull(_ state: FullState, transition: AnyTransition?, animation: Animation, timeout: TimeInterval, completion: OptionalVoid)
+    func showFull(_ state: FullState, transition: AnyTransition?, animation: Animation?, timeout: TimeInterval, completion: OptionalVoid)
     func closeTopScreen()
     
     func closeAll(by id: FullState.ID)
@@ -66,7 +67,7 @@ public extension Coordinated {
     func showFull(
         _ state: FullState,
         transition: AnyTransition?,
-        animation: Animation = .linear,
+        animation: Animation? = nil,
         timeout: TimeInterval = 0,
         completion: OptionalVoid = nil
     ) {
@@ -104,7 +105,7 @@ public extension Coordinated {
             parentId: parentId,
             groupId: state.groupId,
             transition: transition,
-            animation: animation,
+            animation: animation ?? state.defaultAnimation,
             completion: completion
         )
         
