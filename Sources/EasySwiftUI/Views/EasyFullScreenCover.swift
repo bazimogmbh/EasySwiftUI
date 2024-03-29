@@ -83,16 +83,16 @@ public extension Coordinated {
             return
         }
         
+        if self.navigationStack.compactMap({ $0 }).isEmpty {
+            self.navigationStack = []
+        }
+        
         self.navigationStack = self.navigationStack.map { element in
             if let groupId = element?.groupId, groupId == state.groupId  {
                return nil
             }
             
             return element
-        }
-        
-        if self.navigationStack.compactMap({ $0 }).isEmpty {
-            self.navigationStack = []
         }
         
         let id = String(self.navigationStack.endIndex)
