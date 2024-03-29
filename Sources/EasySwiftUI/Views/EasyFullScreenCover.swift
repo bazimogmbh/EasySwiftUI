@@ -77,7 +77,11 @@ public extension Coordinated {
         
         print("!@Coordinator last.state.id \(self.navigationStack.last??.state.id)")
         print("!@Coordinator state.id \(state.id)")
-        if let last = self.navigationStack.last, last?.state.id == state.id { return }
+        print("!@Coordinator state.id \(self.navigationStack.last??.state.id == state.id)")
+        if let last = self.navigationStack.last,
+           last?.state.id == state.id {
+            return
+        }
         
         self.navigationStack = self.navigationStack.map { element in
             if let groupId = element?.groupId, groupId == state.groupId  {
