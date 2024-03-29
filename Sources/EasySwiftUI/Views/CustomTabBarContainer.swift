@@ -13,6 +13,7 @@ public protocol TabItemProtocol: Hashable, CaseIterable { }
 
 public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem: TabItemProtocol>: View, KeyboardHelper {
     @StateObject private var observerContainer = TabBarScrollObserverContainer()
+    @State private var isPresentedKeyboard = false
     
     @Binding var selected: TabBarItem
     @ViewBuilder var content: (TabBarItem) -> Content
@@ -48,28 +49,24 @@ public struct CustomTabBarContainer<Content: View, BarContent: View, TabBarItem:
                         .environmentObject(observerContainer)
                         .environment(\.tabBarHasObserver, true)
                         .safeAreaInset(edge: .bottom, spacing: .zero) {
-                            Color.clear
-                                .frame(height: bottomPadding)
+                            GeometryReader { proxy in
+                                TabBarContent(
+                                    observer: observerContainer.observer,
+                                    allTabs: allTabs,
+                                    proxy: proxy,
+                                    barContent: barContent
+                                )
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            }
+                            .frame(height: isPresentedKeyboard ? 1 : tabBarHeight)
+                            .opacity(isPresentedKeyboard ? 0 : 1)
                         }
+                        .ignoresSafeArea(.keyboard)
                 }
             }
         }
-        .overlay {
-            ZStack(alignment: .bottom) {
-                Color.clear
-                
-                GeometryReader { proxy in
-                    TabBarContent(
-                        observer: observerContainer.observer,
-                        allTabs: allTabs,
-                        proxy: proxy,
-                        barContent: barContent
-                    )
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-                .frame(height: tabBarHeight)
-            }
-            .ignoresSafeArea(.keyboard)
+        .onReceive(isShowKeyboardPublisher) { isShow in
+            isPresentedKeyboard = isShow
         }
         .onAppear {
             UITabBar.appearance().isHidden = true
