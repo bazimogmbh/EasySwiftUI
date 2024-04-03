@@ -7,11 +7,15 @@
 
 import SwiftUI
 
-public extension Binding {
+public extension Binding where Value: Hashable {
     @MainActor
     func map(_ completion: @escaping (Value) -> Value) -> Self {
-        Task {
-            wrappedValue = completion(wrappedValue)
+        let newValue = completion(wrappedValue)
+        
+        if wrappedValue != newValue {
+            Task {
+                wrappedValue = completion(wrappedValue)
+            }
         }
         
         return self
