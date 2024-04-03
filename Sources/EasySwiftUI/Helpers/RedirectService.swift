@@ -60,14 +60,18 @@ public enum RedirectService {
     }
     
     public static func share(_ items: [Any], proxy: GeometryProxy?, scheme: ColorScheme) {
+        share(items, rect: proxy?.frame(in: .global), scheme: scheme)
+    }
+    
+    public static func share(_ items: [Any], rect: CGRect?, scheme: ColorScheme) {
         let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
         
         if let vc = UIApplication.topViewController {
             activityViewController.popoverPresentationController?.sourceView = vc.view
             activityViewController.overrideUserInterfaceStyle = scheme.style
             
-            if let proxy {
-                activityViewController.popoverPresentationController?.sourceRect = proxy.frame(in: .global)
+            if let rect {
+                activityViewController.popoverPresentationController?.sourceRect = rect
             }
             
             vc.present(activityViewController, animated: true, completion: nil)
