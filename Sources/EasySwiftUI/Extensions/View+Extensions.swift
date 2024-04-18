@@ -72,6 +72,7 @@ public extension View {
 }
 
 public extension View {
+#if !os(tvOS)
     @MainActor
     func onTap(action: @escaping @MainActor () -> Void) -> some View {
         self
@@ -82,6 +83,7 @@ public extension View {
                 action()
             }
     }
+#endif
     
     func overlayIf<Content: View>(_ condition: Bool, alignment: Alignment = .center, @ViewBuilder content: @escaping () -> Content) -> some View {
         self
@@ -149,7 +151,7 @@ public extension View {
     }
     
     func hideKeyboard() {
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS)
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 #endif
     }

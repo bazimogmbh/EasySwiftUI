@@ -277,7 +277,7 @@ public extension View {
 }
 
 fileprivate func hideKeyboard() {
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS)
     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 #endif
 }

@@ -5,6 +5,7 @@
 //  Created by Yevhenii Korsun on 26.09.2023.
 //
 
+#if !os(tvOS)
 import SwiftUI
 
 fileprivate struct OverflowViewModifier: ViewModifier {
@@ -54,3 +55,4 @@ public extension View {
         modifier(OverflowViewModifier(showIndicator: showIndicator))
     }
 }
+#endif

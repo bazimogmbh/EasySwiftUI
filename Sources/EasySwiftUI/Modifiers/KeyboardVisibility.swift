@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 
+#if !os(tvOS)
 public extension View {
     
     /// Sets an environment value for keyboardShowing
@@ -67,3 +68,4 @@ private struct KeyboardVisibility: ViewModifier {
     
 #endif
 }
+#endif

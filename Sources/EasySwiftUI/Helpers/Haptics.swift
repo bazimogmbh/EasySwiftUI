@@ -5,7 +5,7 @@
 //  Created by Yevhenii Korsun on 26.09.2023.
 //
 
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS)
 
 import SwiftUI
 
