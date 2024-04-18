@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+#if !os(macOS) && !os(tvOS)
+
 public struct Popover<Content: View>: View, KeyboardHelper {
     @Environment(\.easyDismiss) private var easyDismiss
     @State private var isPresented: Bool = false
@@ -90,3 +92,4 @@ public struct Popover<Content: View>: View, KeyboardHelper {
         CGSize(width: 1, height: offsetY < 0 ? 1 + abs(offsetY / 1000) : 1)
     }
 }
+#endif

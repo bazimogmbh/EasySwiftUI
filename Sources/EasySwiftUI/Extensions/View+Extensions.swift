@@ -104,7 +104,8 @@ public extension View {
                 content(condition!)
             }
     }
-    
+ 
+#if !os(tvOS)
     func bluredIf(_ condition: Bool, radius: CGFloat = 4, tapAction: @escaping () -> Void) -> some View {
         self
             .blur(radius: condition ? radius : 0)
@@ -113,6 +114,7 @@ public extension View {
                     .onTapGesture(perform: tapAction)
             }
     }
+#endif
     
     @ViewBuilder
     func customDisabled(_ isDisabled: Bool) -> some View {

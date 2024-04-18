@@ -15,7 +15,7 @@ public protocol KeyboardHelper {
 
 public extension KeyboardHelper {
     var isShowKeyboardPublisher: AnyPublisher<Bool, Never> {
-#if os(macOS)
+#if os(macOS) || os(tvOS)
         Just(false)
             .eraseToAnyPublisher()
 #else

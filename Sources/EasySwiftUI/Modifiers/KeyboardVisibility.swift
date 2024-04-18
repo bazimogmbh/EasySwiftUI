@@ -32,8 +32,7 @@ public extension EnvironmentValues {
 
 private struct KeyboardVisibility: ViewModifier {
     
-#if os(macOS)
-    
+#if os(macOS) || os(tvOS)
     fileprivate func body(content: Content) -> some View {
         content
             .environment(\.keyboardShowing, false)
