@@ -56,10 +56,12 @@ open class OnboardingBaseViewModel<T: OnboardingStepProtocol>: ObservableObject,
     }
     
     open func handle(_ step: T) {
+#if !os(macOS) && !os(tvOS)
         if step.isAskReviewPage, !self.isShowedAlertPlzHelpUsToGrow {
             RedirectService.showAlertPlzHelpUsToGrow()
             self.isShowedAlertPlzHelpUsToGrow = true
         }
+#endif
         
         if step.isClosePage {
             self.dismiss()
