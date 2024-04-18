@@ -9,7 +9,10 @@
 
 import SwiftUI
 import StoreKit
+
+#if canImport(SafariServices)
 import SafariServices
+#endif
 
 public struct RedirectItem: Hashable {
     let url: String
@@ -33,6 +36,7 @@ public enum RedirectService {
     }
     
     static func redirect(to url: String, scheme: ColorScheme) {
+#if canImport(SafariServices)
         if let url = URL(string: url) {
             let safari = SFSafariViewController(url: url)
             safari.overrideUserInterfaceStyle = scheme.style
@@ -41,6 +45,7 @@ public enum RedirectService {
                 UIApplication.topViewController?.present(safari, animated: true)
             }
         }
+#endif
     }
 
     public static func rateAppPresent() {
