@@ -5,12 +5,20 @@
 //  Created by Yevhenii Korsun on 26.09.2023.
 //
 
-#if !os(tvOS)
 import SwiftUI
+import Combine
 
 fileprivate struct OverflowViewModifier: ViewModifier {
     @State private var contentOverflow: Bool = false
     var showIndicator: Bool
+    
+    private var publisher: AnyPublisher<Notification, Never> {
+#if os(tvOS)
+        Empty<Notification, Never>().eraseToAnyPublisher()
+#else
+        NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification).eraseToAnyPublisher()
+#endif
+    }
     
     func body(content: Content) -> some View {
 #if os(macOS)
@@ -24,7 +32,7 @@ fileprivate struct OverflowViewModifier: ViewModifier {
                             .onAppear {
                                 contentOverflow = contentGeometry.size.height > geometry.size.height
                             }
-                            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                            .onReceive(publisher) { _ in
                                 DispatchQueue.main.async {
                                     contentOverflow = contentGeometry.size.height > geometry.size.height
                                 }
@@ -55,4 +63,3 @@ public extension View {
         modifier(OverflowViewModifier(showIndicator: showIndicator))
     }
 }
-#endif
