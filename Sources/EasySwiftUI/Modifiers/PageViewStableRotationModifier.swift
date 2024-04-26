@@ -19,7 +19,7 @@ fileprivate struct PageViewStableRotationModifier<Selection: Hashable>: ViewModi
             .onRotate { _ in
                 let current = selection
                 
-                DispatchQueue.main.async {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                     id = UUID()
                     selection = current
                 }
