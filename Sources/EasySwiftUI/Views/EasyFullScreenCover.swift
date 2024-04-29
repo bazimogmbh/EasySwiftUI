@@ -176,7 +176,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
     
     var body: some View {
         if asController {
-            EmptyView()
+            Color.clear
                 .onAppear {
                     hideKeyboard()
                     isShow = true
