@@ -184,8 +184,9 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                 .fullScreenCover(isPresented: $isShow, content: {
                     content(itemToReturn)
                         .environment(\.easyDismiss, EasyDismiss {
-                            isShow = false
+//                            isShow = false
                             completion?()
+                            closeAction()
                         })
                 })
         } else {
@@ -213,6 +214,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
             } else {
                 content(itemToReturn)
                     .environment(\.easyDismiss, EasyDismiss {
+                        completion?()
                         closeAction()
                     })
                     .onAppear {
