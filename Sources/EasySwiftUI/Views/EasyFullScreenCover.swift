@@ -164,6 +164,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
     
     @State private var isShow = false
     
+    var asController: Bool = false
     let transition: AnyTransition?
     let animation: Animation
     let itemToReturn: T
@@ -174,35 +175,50 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
     let closeAction: () -> ()
     
     var body: some View {
-        if let transition {
-            ZStack {
-                if isShow {
+        if asController {
+            EmptyView()
+                .onAppear {
+                    hideKeyboard()
+                    isShow = true
+                }
+                .fullScreenCover(isPresented: $isShow, content: {
                     content(itemToReturn)
-                        .transition(transition)
                         .environment(\.easyDismiss, EasyDismiss {
                             isShow = false
                             completion?()
                         })
-                        .onDisappear {
-                            if !isShow {
-                                closeAction()
-                            }
-                        }
-                }
-            }
-            .animation(animation, value: isShow)
-            .onAppear {
-                hideKeyboard()
-                isShow = true
-            }
-        } else {
-            content(itemToReturn)
-                .environment(\.easyDismiss, EasyDismiss {
-                        closeAction()
                 })
+        } else {
+            if let transition {
+                ZStack {
+                    if isShow {
+                        content(itemToReturn)
+                            .transition(transition)
+                            .environment(\.easyDismiss, EasyDismiss {
+                                isShow = false
+                                completion?()
+                            })
+                            .onDisappear {
+                                if !isShow {
+                                    closeAction()
+                                }
+                            }
+                    }
+                }
+                .animation(animation, value: isShow)
                 .onAppear {
                     hideKeyboard()
+                    isShow = true
                 }
+            } else {
+                content(itemToReturn)
+                    .environment(\.easyDismiss, EasyDismiss {
+                        closeAction()
+                    })
+                    .onAppear {
+                        hideKeyboard()
+                    }
+            }
         }
     }
 }
@@ -299,6 +315,7 @@ fileprivate extension DispatchQueue {
 fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: Coordinated>: ViewModifier {
     @Namespace private var namespace
     @ObservedObject var coordinator: Coordinator
+    var asController = false
     @ViewBuilder let easyContent: (Coordinator.FullState) -> EasyContent
     
     func body(content: Content) -> some View {
@@ -311,6 +328,7 @@ fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: C
                             let zIndex = Double(coordinator.navigationStack.distance(from: startIndex, to: index))
                             
                             DismissableView(
+                                asController: asController,
                                 transition: unwrappedItem.transition,
                                 animation: unwrappedItem.animation,
                                 itemToReturn: unwrappedItem.state,
@@ -358,8 +376,9 @@ public extension View {
     @ViewBuilder
     func easyFullScreenCover<EasyContent: View, Coordinator: Coordinated>(
         coordinator: Coordinator,
+        asController: Bool = false,
         @ViewBuilder content: @escaping (Coordinator.FullState) -> EasyContent
     ) -> some View {
-        modifier(EasyFullScreenCoverModifier(coordinator: coordinator, easyContent: content))
+        modifier(EasyFullScreenCoverModifier(coordinator: coordinator, asController: asController, easyContent: content))
     }
 }
