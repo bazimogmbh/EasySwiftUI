@@ -77,7 +77,7 @@ public extension Coordinated {
         
         print("!@Coordinator last.state.id \(self.navigationStack.last??.state.id)")
         print("!@Coordinator state.id \(state.id)")
-        print("!@Coordinator state.id \(self.navigationStack.last??.state.id == state.id)")
+        print("!@Coordinator isEqual screen \(self.navigationStack.last??.state.id == state.id)")
         if let last = self.navigationStack.last,
            last?.state.id == state.id {
             return
@@ -162,6 +162,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
         true
     }
     
+    @State private var isFirstRun = true
     @State private var isShow = false
     
     var asController: Bool = false
@@ -178,16 +179,23 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
         if asController {
             Color.clear
                 .onAppear {
-                    hideKeyboard()
-                    isShow = true
+                    if isFirstRun {
+                        hideKeyboard()
+                        isShow = true
+                        isFirstRun = false
+                    }
                 }
                 .fullScreenCover(isPresented: $isShow, content: {
                     content(itemToReturn)
                         .environment(\.easyDismiss, EasyDismiss {
-//                            isShow = false
+                            isShow = false
                             completion?()
-                            closeAction()
                         })
+                        .onDisappear {
+                            if !isShow {
+                                closeAction()
+                            }
+                        }
                 })
         } else {
             if let transition {
