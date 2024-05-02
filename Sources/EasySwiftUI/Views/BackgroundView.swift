@@ -9,11 +9,12 @@ import SwiftUI
 
 public enum BackgroundState {
 #if os(macOS)
-    case material(NSVisualEffectView.Material)
+    case effect(NSVisualEffectView.Material)
 #else
-    case material(UIBlurEffect.Style)
+    case effect(UIBlurEffect.Style)
 #endif
     
+    case material(Material)
     case color(Color)
 }
 
@@ -27,8 +28,11 @@ public struct BackgroundView: View {
     public var body: some View {
         Group {
             switch state {
+            case .effect(let style):
+                BlurView(style: style)
             case .material(let material):
-                BlurView(style: material)
+                Color.clear
+                    .background(material)
             case .color(let color):
                 color
             }
