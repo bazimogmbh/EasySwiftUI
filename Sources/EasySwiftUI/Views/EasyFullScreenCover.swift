@@ -161,7 +161,11 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
     static func == (lhs: DismissableView<Content, T>, rhs: DismissableView<Content, T>) -> Bool {
         true
     }
-    
+
+#if os(tvOS)
+    @Namespace private var namespace
+    @Environment(\.resetFocus) var resetFocus
+#endif
     @State private var isFirstRun = true
     @State private var isShow = false
     
@@ -217,6 +221,9 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                                 completion?()
                                 closeAction()
                             }
+                            .onAppear {
+                                resetFocus(in: namespace)
+                            }
 #endif
                     }
                 }
@@ -238,6 +245,9 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                     .onExitCommand {
                         completion?()
                         closeAction()
+                    }
+                    .onAppear {
+                        resetFocus(in: namespace)
                     }
 #endif
             }
