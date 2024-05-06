@@ -163,8 +163,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
     }
 
 #if os(tvOS)
-    @Namespace private var namespace
-    @Environment(\.resetFocus) var resetFocus
+    @FocusState private var focus: Bool
 #endif
     @State private var isFirstRun = true
     @State private var isShow = false
@@ -217,12 +216,13 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                                 }
                             }
 #if os(tvOS)
+                            .focused($focus)
+                            .onAppear {
+                                focus  = true
+                            }
                             .onExitCommand {
                                 completion?()
                                 closeAction()
-                            }
-                            .onAppear {
-                                resetFocus(in: namespace)
                             }
 #endif
                     }
@@ -242,12 +242,13 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                         hideKeyboard()
                     }
 #if os(tvOS)
+                    .focused($focus)
+                    .onAppear {
+                        focus  = true
+                    }
                     .onExitCommand {
                         completion?()
                         closeAction()
-                    }
-                    .onAppear {
-                        resetFocus(in: namespace)
                     }
 #endif
             }
