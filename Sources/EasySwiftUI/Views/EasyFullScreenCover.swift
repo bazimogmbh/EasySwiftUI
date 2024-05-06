@@ -212,6 +212,12 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                                     closeAction()
                                 }
                             }
+#if os(tvOS)
+                            .onExitCommand {
+                                completion?()
+                                closeAction()
+                            }
+#endif
                     }
                 }
                 .animation(animation, value: isShow)
@@ -228,6 +234,12 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                     .onAppear {
                         hideKeyboard()
                     }
+#if os(tvOS)
+                    .onExitCommand {
+                        completion?()
+                        closeAction()
+                    }
+#endif
             }
         }
     }
@@ -332,6 +344,7 @@ fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: C
     
     func body(content: Content) -> some View {
         content
+            .disableIfTVOS(!coordinator.navigationStack.compactMap { $0 }.isEmpty)
             .overlay (
                 ZStack { // Need to transition work correct
                     ForEach(coordinator.navigationStack.indices, id: \.self) { index in
