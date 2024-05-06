@@ -241,6 +241,7 @@ public extension View {
         @ViewBuilder content: @escaping () -> Content
     ) -> some View where Content : View {
         self
+            .disableIfTVOS(isPresented.wrappedValue)
             .overlayIf(isPresented.wrappedValue) {
                 DismissableView(
                     transition: transition,
@@ -263,6 +264,7 @@ public extension View {
         @ViewBuilder content: @escaping (T) -> Content
     ) -> some View where Content : View {
         self
+            .disableIfTVOS(item.wrappedValue != nil)
             .overlayIf(item.wrappedValue) { unwrapped in
                 DismissableView(
                     transition: transition,
@@ -358,6 +360,7 @@ fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: C
                                                                 parentPrefix: unwrappedItem.parentId,
                                                                 topScreenPrefix: topScreenPrefix(of: coordinator),
                                                                 namespace: namespace))
+                            .disableIfTVOS(!(index == coordinator.navigationStack.lastIndex(where: { $0 != nil })))
                         }
                     }
                 }
@@ -390,5 +393,16 @@ public extension View {
         @ViewBuilder content: @escaping (Coordinator.FullState) -> EasyContent
     ) -> some View {
         modifier(EasyFullScreenCoverModifier(coordinator: coordinator, asController: asController, easyContent: content))
+    }
+}
+
+fileprivate extension View {
+    func disableIfTVOS(_ disabled: Bool = true) -> some View {
+#if os(tvOS)
+      self
+            .disabled(disabled)
+#else
+     self
+#endif
     }
 }
