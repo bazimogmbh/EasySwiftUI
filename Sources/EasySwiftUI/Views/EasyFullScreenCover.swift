@@ -218,7 +218,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
 #if os(tvOS)
                             .focused($focus)
                             .onAppear {
-                                focus  = true
+                                focus = true
                             }
                             .onExitCommand {
                                 completion?()

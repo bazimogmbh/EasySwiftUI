@@ -15,7 +15,7 @@ import SafariServices
 #endif
 
 public struct RedirectItem: Hashable {
-    let url: String
+    public let url: String
     
     public init(_ url: String) {
         self.url = url
