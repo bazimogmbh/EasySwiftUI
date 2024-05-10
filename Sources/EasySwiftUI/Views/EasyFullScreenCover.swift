@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 public struct CoordinatedItem<T> {
-    let date = Date()
+    public let date = Date()
     let state: T
     
     var id: String
