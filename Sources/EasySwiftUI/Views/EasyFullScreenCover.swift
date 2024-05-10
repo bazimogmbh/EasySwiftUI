@@ -10,16 +10,16 @@ import Combine
 
 public struct CoordinatedItem<T> {
     public let date = Date()
-    let state: T
+    public let state: T
     
-    var id: String
-    var parentId: String
-    var groupId: String?
+    public var id: String
+    public var parentId: String
+    public var groupId: String?
     
-    var transition: AnyTransition? = .opacity
-    var animation: Animation = .linear
+    public var transition: AnyTransition? = .opacity
+    public var animation: Animation = .linear
     
-    var completion: OptionalVoid = nil
+    public var completion: OptionalVoid = nil
 }
 
 public protocol NavigationalItem: Identifiable {
