@@ -20,6 +20,24 @@ public struct CoordinatedItem<T> {
     public var animation: Animation = .linear
     
     public var completion: OptionalVoid = nil
+    
+    public init(
+        state: T,
+        id: String,
+        parentId: String,
+        groupId: String? = nil,
+        transition: AnyTransition? = .opacity,
+        animation: Animation = .linear,
+        completion: OptionalVoid = nil
+    ) {
+        self.state = state
+        self.id = id
+        self.parentId = parentId
+        self.groupId = groupId
+        self.transition = transition
+        self.animation = animation
+        self.completion = completion
+    }
 }
 
 public protocol NavigationalItem: Identifiable {
