@@ -86,7 +86,7 @@ public extension Coordinated {
         _ state: FullState,
         transition: AnyTransition?,
         animation: Animation? = nil,
-        timeout: TimeInterval = 0,
+        timeout: TimeInterval = 0.45,
         completion: OptionalVoid = nil
     ) {
         if let date = navigationStack.last??.date, Date().timeIntervalSince(date) < timeout {
