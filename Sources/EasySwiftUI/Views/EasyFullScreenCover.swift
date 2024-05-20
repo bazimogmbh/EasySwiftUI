@@ -389,10 +389,12 @@ fileprivate struct EasyFullScreenCoverModifier<EasyContent: View, Coordinator: C
                                 completion: unwrappedItem.completion,
                                 content: easyContent,
                                 closeAction: {
-                                    coordinator.navigationStack[index] = nil
-                                    
-                                    if coordinator.navigationStack.endIndex - 1 == index {
-                                        coordinator.navigationStack.removeLast()
+                                    if index >= 0 && index < coordinator.navigationStack.count {
+                                        coordinator.navigationStack[index] = nil
+                                        
+                                        if coordinator.navigationStack.endIndex - 1 == index {
+                                            coordinator.navigationStack.removeLast()
+                                        }
                                     }
                                 }
                             )
