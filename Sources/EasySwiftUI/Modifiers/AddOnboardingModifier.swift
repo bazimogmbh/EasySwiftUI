@@ -70,13 +70,13 @@ open class OnboardingBaseViewModel<T: OnboardingStepProtocol>: ObservableObject,
 }
 
 fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView: View>: ViewModifier {
-    @State private var isNeeToRunAction = true
+    @State private var isNeedToRunAction = true
     
     @StateObject var vm: VM
     let transition: AnyTransition
     @ViewBuilder let onboardingContent: () -> OnboardingView
     
-    init(vm: VM, transition: AnyTransition = .opacity, onboardingContent: @escaping () -> OnboardingView) {
+    init(vm: VM, transition: AnyTransition = .asymmetric(insertion: .identity, removal: .opacity), onboardingContent: @escaping () -> OnboardingView) {
         self._vm = StateObject(wrappedValue: vm)
         self.transition = transition
         self.onboardingContent = onboardingContent
@@ -84,9 +84,7 @@ fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView
 
     func body(content: Content) -> some View {
         ZStackWithBackground {
-            if vm.isRunContentOnStart {
-                content
-            } else if !vm.isFirstRun {
+            if vm.isRunContentOnStart || !vm.isFirstRun {
                 content
             }
         }
@@ -99,10 +97,11 @@ fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView
         .onAppear(perform: dismissAction)
     }
     
-    @MainActor private func dismissAction() {
-        if !vm.isFirstRun, isNeeToRunAction {
+    @MainActor 
+    private func dismissAction() {
+        if !vm.isFirstRun, isNeedToRunAction {
             vm.onCloseOnboarding()
-            isNeeToRunAction = false
+            isNeedToRunAction = false
         }
     }
 }
@@ -110,7 +109,7 @@ fileprivate struct AddOnboardingModifier<VM: OnboardingHandlable, OnboardingView
 public extension View {
     func easyOnboardingCover<VM: OnboardingHandlable, OnboardingView: View>(
         vm: VM,
-        transition: AnyTransition = .opacity,
+        transition: AnyTransition = .asymmetric(insertion: .identity, removal: .opacity),
         @ViewBuilder onboardingContent: @escaping () -> OnboardingView
     ) -> some View {
         modifier(AddOnboardingModifier(vm: vm, transition: transition, onboardingContent: onboardingContent))
