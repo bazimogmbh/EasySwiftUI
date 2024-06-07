@@ -9,7 +9,7 @@
 import SwiftUI
 
 public enum ButtonTapEffect {
-    case `default`, scale
+    case `default`, scale, noEffect
 }
 
 @available(macOS 12, *)
@@ -96,6 +96,9 @@ fileprivate extension View {
         case .scale:
             self
                 .buttonStyle(CustomLabelButtonStyle())
+        case .noEffect:
+            self
+                .buttonStyle(NoEffectButtonStyle())
         }
     }
 }
@@ -105,5 +108,12 @@ fileprivate struct CustomLabelButtonStyle: ButtonStyle {
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.9 : 1)
+    }
+}
+
+@available(macOS 12, *)
+fileprivate struct NoEffectButtonStyle: ButtonStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
     }
 }
