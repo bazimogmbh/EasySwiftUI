@@ -9,21 +9,27 @@ import SwiftUI
 
 #if !os(macOS) && !os(tvOS)
 
-public struct Popover<Content: View>: View, KeyboardHelper {
+public struct Popover<Content: View, T: ShapeStyle>: View, KeyboardHelper {
     @Environment(\.easyDismiss) private var easyDismiss
     @State private var isPresented: Bool = false
     @State private var offsetY: CGFloat = 0
     
-    var dragHeight: CGFloat = 30
+    private let background: T
+    private let isPresentedOpacity: CGFloat
+    private var dragHeight: CGFloat = 30
+    private var closeAction: () -> Void
     
-    var closeAction: () -> Void
     @ViewBuilder let content: () -> Content
 
     public init(
+        background: T = Color.black,
+        isPresentedOpacity: CGFloat = 0.7,
         dragHeight: CGFloat = 30,
         closeAction: @escaping () -> Void = {},
         @ViewBuilder content: @escaping () -> Content
     ) {
+        self.background = background
+        self.isPresentedOpacity = isPresentedOpacity
         self.dragHeight = dragHeight
         self.closeAction = closeAction
         self.content = content
@@ -31,8 +37,11 @@ public struct Popover<Content: View>: View, KeyboardHelper {
     
     public var body: some View {
         GeometryReader { geo in
-            Color.black
-                .opacity(isPresented ? 0.7 : 0)
+            Color.clear
+                .background(
+                    background
+                        .opacity(isPresented ? isPresentedOpacity : 0)
+                )
                 .ignoresSafeArea()
                 .animation(.easeInOut, value: isPresented)
                 .onTapGesture {
