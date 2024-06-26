@@ -674,6 +674,17 @@
     },
     "Ok" : {
 
+    },
+    "Support Email" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support Email"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

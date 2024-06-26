@@ -29,8 +29,6 @@ public extension RedirectItem {
 }
 
 public enum RedirectService {
-    static private let supportService = SupportEmailService()
-    
     public static func redirect(to item: RedirectItem, scheme: ColorScheme) {
         redirect(to: item.url, scheme: scheme)
     }
@@ -47,20 +45,21 @@ public enum RedirectService {
         }
 #endif
     }
-
+    
     public static func rateAppPresent() {
         if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
             SKStoreReviewController.requestReview(in: scene)
         }
     }
-
+    
     public static func share(_ fileUrl: String, proxy: GeometryProxy?, scheme: ColorScheme) {
         if let url = URL(string: fileUrl) {
             share([url], proxy: proxy, scheme: scheme)
         }
     }
     
-    public static func sendSupportEmail(toAddress: String) {
+    public static func sendSupportEmail(toAddress: String, additionalInfo: String? = nil) {
+        let supportService = SupportEmailService(additionalInfo: additionalInfo)
         supportService.send(toAddress: toAddress)
     }
     
@@ -171,14 +170,25 @@ fileprivate extension ColorScheme {
 }
 
 fileprivate struct SupportEmailService {
-    let subject: String = "Support Email"
-    let messageHeader: String = "Please describe your issue below"
-    var body: String {"""
+    let subject: String = "Support Email"~
+    let messageHeader: String = "Please describe your issue below"~
+    let additionalInfo: String?
+    
+    var body: String {
+        var baseInfo = """
         Application Name: \(Bundle.main.displayName)
         iOS: \(UIDevice.current.systemVersion)
         Device Model: \(UIDevice.current.modelName)
         Appp Version: \(Bundle.main.appVersion)
         App Build: \(Bundle.main.appBuild)
+    """
+        
+        if let additionalInfo, !additionalInfo.isEmpty {
+            baseInfo += "\n\(additionalInfo)"
+        }
+        
+        return """
+        \(baseInfo)
         \(messageHeader)
     --------------------------------------
     """
@@ -226,3 +236,4 @@ fileprivate extension Bundle {
 }
 
 #endif
+
