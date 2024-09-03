@@ -175,3 +175,18 @@ fileprivate struct ScrollButtonStyle: ButtonStyle {
             .opacity(configuration.isPressed ? 1 : 1)
     }
 }
+
+public extension View {
+    func onChange<Value: Equatable>(_ value: Value, action: @escaping (Value) -> Void) -> some View {
+        if #available(iOS 17.0, *) {
+            self
+                .onChange(of: value, perform: { newValue in
+                    action(newValue)
+                })
+            
+        } else {
+            self
+                .onChange(of: value, perform: action)
+        }
+    }
+}

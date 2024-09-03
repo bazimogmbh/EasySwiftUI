@@ -183,7 +183,6 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
 #if os(tvOS)
     @FocusState private var focus: Bool
 #endif
-    @State private var closeWasRun = false
     @State private var isFirstRun = true
     @State private var isShow = false
     
@@ -226,12 +225,12 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                         content(itemToReturn)
                             .transition(transition)
                             .environment(\.easyDismiss, EasyDismiss {
+                                hideKeyboard()
                                 isShow = false
                                 completion?()
                             })
                             .onDisappear {
                                 if !isShow {
-                                    closeWasRun = true
                                     closeAction()
                                 }
                             }
@@ -248,16 +247,6 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                     }
                 }
                 .animation(animation, value: isShow)
-                .onChange(isShow, action: { newValue in
-                    if !isShow {
-                        Task { @MainActor in
-                            try? await Task.sleep(nanoseconds: 1500_000_000)
-                            if !closeWasRun {
-                                self.closeAction()
-                            }
-                        }
-                    }
-                })
                 .onAppear {
                     hideKeyboard()
                     isShow = true
@@ -460,20 +449,5 @@ fileprivate extension View {
 #else
      self
 #endif
-    }
-}
-
-extension View {
-    func onChange<Value: Equatable>(_ value: Value, action: @escaping (Value) -> Void) -> some View {
-        if #available(iOS 17.0, *) {
-            self
-                .onChange(of: value, perform: { newValue in
-                    action(newValue)
-                })
-            
-        } else {
-            self
-                .onChange(of: value, perform: action)
-        }
     }
 }
