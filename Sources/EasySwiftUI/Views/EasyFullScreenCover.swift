@@ -228,11 +228,6 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                                 isShow = false
                                 completion?()
                             })
-                            .onDisappear {
-                                if !isShow {
-                                    closeAction()
-                                }
-                            }
 #if os(tvOS)
                             .focused($focus)
                             .onAppear {
@@ -246,6 +241,11 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                     }
                 }
                 .animation(animation, value: isShow)
+                .onChange(isShow, action: { newValue in
+                    if !isShow {
+                        closeAction()
+                    }
+                })
                 .onAppear {
                     hideKeyboard()
                     isShow = true
@@ -448,5 +448,20 @@ fileprivate extension View {
 #else
      self
 #endif
+    }
+}
+
+extension View {
+    func onChange<Value: Equatable>(_ value: Value, action: @escaping (Value) -> Void) -> some View {
+        if #available(iOS 17.0, *) {
+            self
+                .onChange(of: value, perform: { newValue in
+                    action(newValue)
+                })
+            
+        } else {
+            self
+                .onChange(of: value, perform: action)
+        }
     }
 }
