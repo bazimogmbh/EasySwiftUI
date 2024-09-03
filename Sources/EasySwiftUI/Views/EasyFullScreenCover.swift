@@ -228,6 +228,11 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                                 isShow = false
                                 completion?()
                             })
+                            .onDisappear {
+                                if !isShow {
+                                    closeAction()
+                                }
+                            }
 #if os(tvOS)
                             .focused($focus)
                             .onAppear {
@@ -243,7 +248,10 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                 .animation(animation, value: isShow)
                 .onChange(isShow, action: { newValue in
                     if !isShow {
-                        closeAction()
+                        Task { @MainActor in
+                            try? await Task.sleep(nanoseconds: 1500_000_000)
+                            self.closeAction()
+                        }
                     }
                 })
                 .onAppear {
