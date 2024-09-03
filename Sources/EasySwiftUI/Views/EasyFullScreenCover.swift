@@ -183,6 +183,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
 #if os(tvOS)
     @FocusState private var focus: Bool
 #endif
+    @State private var closeWasRun = false
     @State private var isFirstRun = true
     @State private var isShow = false
     
@@ -230,6 +231,7 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                             })
                             .onDisappear {
                                 if !isShow {
+                                    closeWasRun = true
                                     closeAction()
                                 }
                             }
@@ -250,7 +252,9 @@ fileprivate struct DismissableView<Content: View, T>: View, Equatable {
                     if !isShow {
                         Task { @MainActor in
                             try? await Task.sleep(nanoseconds: 1500_000_000)
-                            self.closeAction()
+                            if !closeWasRun {
+                                self.closeAction()
+                            }
                         }
                     }
                 })
