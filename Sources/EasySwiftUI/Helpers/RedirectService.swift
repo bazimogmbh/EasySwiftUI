@@ -29,15 +29,18 @@ public extension RedirectItem {
 }
 
 public enum RedirectService {
-    public static func redirect(to item: RedirectItem, scheme: ColorScheme) {
+    public static func redirect(to item: RedirectItem, scheme: ColorScheme? = nil) {
         redirect(to: item.url, scheme: scheme)
     }
     
-    static func redirect(to url: String, scheme: ColorScheme) {
+    static func redirect(to url: String, scheme: ColorScheme? = nil) {
 #if canImport(SafariServices)
         if let url = URL(string: url) {
             let safari = SFSafariViewController(url: url)
-            safari.overrideUserInterfaceStyle = scheme.style
+            
+            if let scheme {
+                safari.overrideUserInterfaceStyle = scheme.style
+            }
             
             DispatchQueue.main.async {
                 UIApplication.topViewController?.present(safari, animated: true)
@@ -52,7 +55,7 @@ public enum RedirectService {
         }
     }
     
-    public static func share(_ fileUrl: String, proxy: GeometryProxy?, scheme: ColorScheme) {
+    public static func share(_ fileUrl: String, proxy: GeometryProxy?, scheme: ColorScheme? = nil) {
         if let url = URL(string: fileUrl) {
             share([url], proxy: proxy, scheme: scheme)
         }
@@ -63,16 +66,19 @@ public enum RedirectService {
         supportService.send(toAddress: toAddress)
     }
     
-    public static func share(_ items: [Any], proxy: GeometryProxy?, scheme: ColorScheme) {
+    public static func share(_ items: [Any], proxy: GeometryProxy?, scheme: ColorScheme? = nil) {
         share(items, rect: proxy?.frame(in: .global), scheme: scheme)
     }
     
-    public static func share(_ items: [Any], rect: CGRect?, scheme: ColorScheme) {
+    public static func share(_ items: [Any], rect: CGRect?, scheme: ColorScheme? = nil) {
         let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
         
         if let vc = UIApplication.topViewController {
             activityViewController.popoverPresentationController?.sourceView = vc.view
-            activityViewController.overrideUserInterfaceStyle = scheme.style
+            
+            if let scheme {
+                activityViewController.overrideUserInterfaceStyle = scheme.style
+            }
             
             if let rect {
                 activityViewController.popoverPresentationController?.sourceRect = rect
