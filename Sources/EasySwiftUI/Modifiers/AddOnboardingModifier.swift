@@ -14,10 +14,11 @@ public protocol OnboardingStepProtocol: RawRepresentable<Int>, CaseIterable, Equ
     var isAskReviewPage: Bool { get }
 }
 
+@MainActor
 public protocol OnboardingHandlable: ObservableObject {
     var isFirstRun: Bool { get set }
     var isRunContentOnStart: Bool { get }
-    @MainActor func onCloseOnboarding()
+    func onCloseOnboarding()
 }
 
 public extension OnboardingHandlable {
