@@ -64,6 +64,7 @@ fileprivate struct SwipeToDeleteModifier<UnderContent: View>: ViewModifier {
     }
 }
 
+
 public extension View {
     func onSwipe<Content: View>(
         width: CGFloat = 130,
