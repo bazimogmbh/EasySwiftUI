@@ -33,7 +33,15 @@ fileprivate struct SwipeToDeleteModifier<UnderContent: View>: ViewModifier {
                         }
                 }
                 .offset(x: offset)
-                .simultaneousGesture(swipe, including: .gesture)
+                .apply {
+                    if #available(iOS 18, *) {
+                        $0
+                            .simultaneousGesture(swipe, including: .gesture)
+                    } else {
+                        $0
+                            .highPriorityGesture(swipe)
+                    }
+                }
                 .animation(.easeOut, value: offset)
         }
         .onChange(of: isPresented) { _ in
