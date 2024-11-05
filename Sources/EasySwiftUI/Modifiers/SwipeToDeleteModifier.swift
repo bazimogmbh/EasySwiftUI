@@ -33,7 +33,7 @@ fileprivate struct SwipeToDeleteModifier<UnderContent: View>: ViewModifier {
                         }
                 }
                 .offset(x: offset)
-                .highPriorityGesture(swipe)
+                .simultaneousGesture(swipe, including: .gesture)
                 .animation(.easeOut, value: offset)
         }
         .onChange(of: isPresented) { _ in
@@ -44,7 +44,7 @@ fileprivate struct SwipeToDeleteModifier<UnderContent: View>: ViewModifier {
     }
     
     private var swipe: some Gesture {
-        DragGesture()
+        DragGesture(minimumDistance: 15)
             .onEnded({ (value) in
                 setIsOpen(to: -value.translation.width >= 60)
             })
