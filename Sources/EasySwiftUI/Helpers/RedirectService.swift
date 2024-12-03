@@ -185,7 +185,7 @@ fileprivate struct SupportEmailService {
         Application Name: \(Bundle.main.displayName)
         iOS: \(UIDevice.current.systemVersion)
         Device Model: \(UIDevice.current.modelName)
-        Appp Version: \(Bundle.main.appVersion)
+        App Version: \(Bundle.main.appVersion)
         App Build: \(Bundle.main.appBuild)
     """
         
