@@ -31,17 +31,18 @@ public struct ZStackWithBackground<Content: View>: View {
         }
         .overlay(alignment: .topLeading) {
 #if DEBUG
-            if isShowCircleOverZstack
+            if EasySwiftUI.isShowCircleOverZstack {
                 Circle()
-                .fill(Color.random)
-                .frame(width: 20, height: 20)
-                .allowsHitTesting(false)
-        } else {
-            EmptyView()
+                    .fill(Color.random)
+                    .frame(width: 20, height: 20)
+                    .allowsHitTesting(false)
+            } else {
+                EmptyView()
+            }
 #else
-            EmptyView()
+                EmptyView()
 #endif
-        }
+            }
     }
 }
 
