@@ -31,12 +31,15 @@ public struct ZStackWithBackground<Content: View>: View {
         }
         .overlay(alignment: .topLeading) {
 #if DEBUG
-            Circle()
+            if isShowCircleOverZstack
+                Circle()
                 .fill(Color.random)
                 .frame(width: 20, height: 20)
                 .allowsHitTesting(false)
+        } else {
+            EmptyView()
 #else
-         EmptyView()
+            EmptyView()
 #endif
         }
     }
