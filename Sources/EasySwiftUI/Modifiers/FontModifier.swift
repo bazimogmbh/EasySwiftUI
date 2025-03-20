@@ -87,10 +87,16 @@ public struct AppFont: Hashable {
     }
 }
 
-public extension View {
-    func customFont(_ font: AppFont, size: Double, color: Color? = EasySwiftUI.appForeground, scaleFactor: CGFloat = EasySwiftUI.textScaleFactor) -> some View {
-        self
-            .customFont(.custom(font.name, size: size), color: color, scaleFactor: scaleFactor)
+public extension Text {
+    func customFont(_ font: AppFont, size: Double, color: Color? = EasySwiftUI.appForeground, scaleFactor: CGFloat = EasySwiftUI.textScaleFactor) -> Text {
+        if let color = color {
+            self
+                .font(.custom(font.name, size: size))
+                .foregroundColor(color)
+        } else {
+            self
+                .font(.custom(font.name, size: size))
+        }
     }
 }
 
