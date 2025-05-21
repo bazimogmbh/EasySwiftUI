@@ -80,8 +80,8 @@ public struct CustomButton<Content>: View where Content: View {
             action?()
         } label: {
             label()
-                .allowsHitTesting(false)
-                .overlay(Color.transparent)
+//                .allowsHitTesting(false)
+//                .overlay(Color.transparent)
         }
         .addButtonStyle(by: tapEffect)
     }
