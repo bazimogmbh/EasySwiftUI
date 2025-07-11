@@ -14,11 +14,13 @@ import SwiftUI
 public final class Haptics {
     public enum HapticType {
         case light
+        case soft
         case medium
         case heavy
         case success
         case error
         case warning
+        case selectionChanged
     }
     
     private static var isEnable = true
@@ -36,6 +38,9 @@ public final class Haptics {
         case .light:
             let impact = UIImpactFeedbackGenerator(style: .light)
             impact.impactOccurred()
+        case .soft:
+            let impact = UIImpactFeedbackGenerator(style: .soft)
+            impact.impactOccurred()
         case .medium:
             let impact = UIImpactFeedbackGenerator(style: .medium)
             impact.impactOccurred()
@@ -48,6 +53,9 @@ public final class Haptics {
             generator.notificationOccurred(.error)
         case .warning:
             generator.notificationOccurred(.warning)
+        case .selectionChanged:
+            let selection = UISelectionFeedbackGenerator()
+            selection.selectionChanged()
         }
     }
 }
