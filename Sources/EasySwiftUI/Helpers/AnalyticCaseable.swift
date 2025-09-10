@@ -7,6 +7,8 @@
 
 import Foundation
 
+public protocol AnalyticsParameterable { }
+
 public protocol AnalyticCaseable {
     var name: String { get }
     var parameters: [String: Any] { get }
@@ -27,17 +29,28 @@ public extension AnalyticCaseable {
             let valueMirror = Mirror(reflecting: child.value)
             
             valueMirror.children.forEach { valueChild in
-                guard let label = valueChild.label else { return }
-                
-                if let bool = valueChild.value as? Bool {
-                    dictionary[convertCamelCaseToSnakeCase(label)] = bool.description
+                if let customReflectable = valueChild.value as? AnalyticsParameterable {
+                    let customMirror = Mirror(reflecting: customReflectable)
+                    customMirror.children.forEach { customChild in
+                        saveToDictionary(customChild)
+                    }
                 } else {
-                    dictionary[convertCamelCaseToSnakeCase(label)] = valueChild.value
+                    saveToDictionary(valueChild)
                 }
             }
         }
         
         return dictionary
+        
+        func saveToDictionary(_ child: Mirror.Child) {
+            guard let label = child.label else { return }
+            
+            if let bool = child.value as? Bool {
+                dictionary[convertCamelCaseToSnakeCase(label)] = bool.description
+            } else {
+                dictionary[convertCamelCaseToSnakeCase(label)] = child.value
+            }
+        }
     }
     
     private func convertCamelCaseToSnakeCase(_ input: String) -> String {
