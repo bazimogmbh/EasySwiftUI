@@ -156,6 +156,68 @@ public struct ObservableScrollView<Content: View>: View {
     }
 }
 
+public struct ObservableList<Content: View>: View {
+    public enum ScrollObserver {
+        case navBar, tabBar
+    }
+    
+    @Environment(\.navBarHasObserver) private var navBarHasObserver
+    @Environment(\.tabBarHasObserver) private var tabBarHasObserver
+    
+    @EnvironmentObject private var navObserver: NavBarScrollObserverContainer
+    @EnvironmentObject private var tabObserver: TabBarScrollObserverContainer
+    @State private var isShow = false
+    
+    var observers: Set<ScrollObserver>
+    
+    @ViewBuilder let content: () -> Content
+    
+    public init(
+        observers: Set<ScrollObserver> = [.navBar],
+        content: @escaping () -> Content
+    ) {
+        self.observers = observers
+        self.content = content
+    }
+    
+    public var body: some View {
+        ClearList {
+            content()
+                .background(alignment: .top) {
+                    if isShow && observers.contains(.navBar) && navBarHasObserver {
+                        GeometryReader { proxy in
+                            Color.clear
+                                .preference(key: NavScrollPreferenceKey.self, value: proxy.frame(in: .named(navObserver.observer.coordinateSpace)))
+                                .onPreferenceChange(NavScrollPreferenceKey.self) { rect in
+                                    navObserver.observer.set(rect)
+                                }
+                        }
+                        .frame(height: 0)
+                    }
+                }
+                .background(alignment: .bottom) {
+                    if isShow && observers.contains(.tabBar) && tabBarHasObserver {
+                        GeometryReader { proxy in
+                            Color.clear
+                                .preference(key: TabScrollPreferenceKey.self, value: proxy.frame(in: .global))
+                                .onPreferenceChange(TabScrollPreferenceKey.self) { rect in
+                                    tabObserver.observer.set(rect)
+                                }
+                        }
+                        .frame(height: 0)
+                    }
+                }
+        }
+        .onAppear {
+            isShow = true
+        }
+        .onDisappear {
+            isShow = false
+        }
+    }
+}
+
+
 #Preview {
     ObservableScrollView {
         Color.red
