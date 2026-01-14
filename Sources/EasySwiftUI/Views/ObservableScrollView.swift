@@ -156,6 +156,8 @@ public struct ObservableScrollView<Content: View>: View {
     }
 }
 
+#if !os(tvOS)
+
 public struct ObservableList<Content: View>: View {
     public enum ScrollObserver {
         case navBar, tabBar
@@ -216,7 +218,7 @@ public struct ObservableList<Content: View>: View {
         }
     }
 }
-
+#endif
 
 #Preview {
     ObservableScrollView {

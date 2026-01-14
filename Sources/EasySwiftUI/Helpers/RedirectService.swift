@@ -61,7 +61,7 @@ public enum RedirectService {
         }
     }
     
-    public static func sendSupportEmail(toAddress: String, additionalInfo: String? = nil) {
+    public static func sendSupportEmail(toAddress: String, additionalInfo: String? = nil, ) {
         let supportService = SupportEmailService(additionalInfo: additionalInfo)
         supportService.send(toAddress: toAddress)
     }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if !os(tvOS)
 public struct ClearList<Content: View, S: ListStyle>: View {
     public var style: S
     public var insets: EdgeInsets = .init()
@@ -39,3 +40,5 @@ public extension ClearList where S == InsetListStyle {
         self.init(style: .inset, insets: insets, content: content)
     }
 }
+
+#endif
